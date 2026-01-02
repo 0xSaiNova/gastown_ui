@@ -1,4 +1,13 @@
 {
   "version": 1,
-  "rigs": {}
+  "rigs": {
+    "gastown-ui": {
+      "git_url": "https://github.com/Avyukth/gastown-ui.git",
+      "added_at": "2026-01-02T17:55:34.913572+05:30",
+      "beads": {
+        "repo": "",
+        "prefix": "gu"
+      }
+    }
+  }
 }
