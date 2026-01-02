@@ -56,3 +56,21 @@
 # =============================================================================
 # Note: .beads/ has its own .gitignore that handles SQLite files
 # and keeps issues.jsonl, metadata.json, config file as source of truth
+
+ADR
+
+# bv (beads viewer) local config and caches
+.bv/
+
+# =============================================================================
+# Gas Town runtime directories (created by gt daemon)
+# =============================================================================
+/daemon/
+/deacon/
+/spawn/
+/plugins/
+/.events.jsonl
+/.feed.jsonl
+
+# Rig directories (created by gt rig add)
+/gastown-ui/
