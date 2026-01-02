@@ -2,6 +2,50 @@
 
 This project uses **bd** (beads) for issue tracking. Run `bd onboard` to get started.
 
+## Project Structure
+
+```
+gastown-ui/                          # Town root
+├── .beads/                          # Town-level beads (mayor mail, HQ coordination)
+├── AGENTS.md                        # This file
+├── CLAUDE.md                        # Mayor context
+│
+└── gastown-ui/                      # Rig: SvelteKit UI project
+    ├── .repo.git/                   # Bare git repository (shared by all worktrees)
+    │
+    ├── mayor/
+    │   ├── rig/                     # Mayor's reference clone (READ-ONLY)
+    │   │   └── .beads/              # Rig beads database (source of truth)
+    │   └── state.json
+    │
+    ├── polecats/                    # Worker worktrees
+    │   ├── furiosa/                 # Polecat worktree
+    │   │   └── .beads/redirect      # → ../../mayor/rig/.beads
+    │   └── nux/                     # Polecat worktree
+    │       └── .beads/redirect      # → ../../mayor/rig/.beads
+    │
+    ├── refinery/
+    │   └── rig/                     # Merge queue processor worktree (on main)
+    │       └── .beads/redirect      # → ../../mayor/rig/.beads
+    │
+    ├── crew/                        # Human-managed worktrees
+    │   └── amrit/
+    │
+    └── witness/                     # Polecat lifecycle monitor
+        └── state.json
+```
+
+### Key Concepts
+
+| Component | Purpose |
+|-----------|---------|
+| **Town** | Workspace root containing all rigs |
+| **Rig** | Project container (one per repo) |
+| **Polecat** | Worker agent with isolated git worktree |
+| **Refinery** | Merge queue processor (rebases, tests, merges) |
+| **Witness** | Monitors polecat lifecycle |
+| **Beads** | Issue tracking, shared via redirect to mayor/rig/.beads |
+
 ## Quick Reference
 
 ```bash
