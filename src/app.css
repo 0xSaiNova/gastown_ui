@@ -166,13 +166,38 @@
 		@apply outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
 	}
 
-	/* Stagger animation delays */
+	/* Individual stagger delay classes (for manual control) */
 	.stagger-0 { animation-delay: 0ms; animation-fill-mode: both; }
 	.stagger-1 { animation-delay: calc(1 * var(--delay-stagger, 50ms)); animation-fill-mode: both; }
 	.stagger-2 { animation-delay: calc(2 * var(--delay-stagger, 50ms)); animation-fill-mode: both; }
 	.stagger-3 { animation-delay: calc(3 * var(--delay-stagger, 50ms)); animation-fill-mode: both; }
 	.stagger-4 { animation-delay: calc(4 * var(--delay-stagger, 50ms)); animation-fill-mode: both; }
 	.stagger-5 { animation-delay: calc(5 * var(--delay-stagger, 50ms)); animation-fill-mode: both; }
+	.stagger-6 { animation-delay: calc(6 * var(--delay-stagger, 50ms)); animation-fill-mode: both; }
+	.stagger-7 { animation-delay: calc(7 * var(--delay-stagger, 50ms)); animation-fill-mode: both; }
+	.stagger-8 { animation-delay: calc(8 * var(--delay-stagger, 50ms)); animation-fill-mode: both; }
+}
+
+/* === Stagger Animation Container === */
+/* Apply .stagger to parent, children get automatic staggered delays */
+@layer components {
+	.stagger > * {
+		animation-fill-mode: both;
+	}
+
+	.stagger > *:nth-child(1) { animation-delay: calc(0 * var(--delay-stagger, 50ms)); }
+	.stagger > *:nth-child(2) { animation-delay: calc(1 * var(--delay-stagger, 50ms)); }
+	.stagger > *:nth-child(3) { animation-delay: calc(2 * var(--delay-stagger, 50ms)); }
+	.stagger > *:nth-child(4) { animation-delay: calc(3 * var(--delay-stagger, 50ms)); }
+	.stagger > *:nth-child(5) { animation-delay: calc(4 * var(--delay-stagger, 50ms)); }
+	.stagger > *:nth-child(6) { animation-delay: calc(5 * var(--delay-stagger, 50ms)); }
+	.stagger > *:nth-child(7) { animation-delay: calc(6 * var(--delay-stagger, 50ms)); }
+	.stagger > *:nth-child(8) { animation-delay: calc(7 * var(--delay-stagger, 50ms)); }
+
+	/* For items beyond 8, use CSS var set by JS utility */
+	.stagger > *:nth-child(n+9) {
+		animation-delay: var(--stagger-delay, calc(8 * var(--delay-stagger, 50ms)));
+	}
 }
 
 /* === Keyframe Animations === */
@@ -191,6 +216,7 @@
 	*::before,
 	*::after {
 		animation-duration: 0.01ms !important;
+		animation-delay: 0ms !important;
 		animation-iteration-count: 1 !important;
 		transition-duration: 0.01ms !important;
 		scroll-behavior: auto !important;
@@ -198,6 +224,12 @@
 
 	.status-pending {
 		animation: none;
+	}
+
+	/* Remove stagger delays */
+	.stagger > *,
+	[class*="stagger-"] {
+		animation-delay: 0ms !important;
 	}
 }
 

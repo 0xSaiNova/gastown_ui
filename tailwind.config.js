@@ -1,4 +1,5 @@
 import { fontFamily } from 'tailwindcss/defaultTheme';
+import plugin from 'tailwindcss/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -151,6 +152,19 @@ export default {
 				'touch': 'var(--touch-target-min)'
 			},
 
+			// Animation delay utilities for stagger effects
+			animationDelay: {
+				'0': '0ms',
+				'100': '100ms',
+				'200': '200ms',
+				'300': '300ms',
+				'400': '400ms',
+				'500': '500ms',
+				'600': '600ms',
+				'700': '700ms',
+				'800': '800ms'
+			},
+
 			// Keyframes for animations
 			keyframes: {
 				'fade-in': {
@@ -160,6 +174,22 @@ export default {
 				'fade-in-up': {
 					from: { opacity: '0', transform: 'translateY(10px)' },
 					to: { opacity: '1', transform: 'translateY(0)' }
+				},
+				'blur-fade-up': {
+					from: { opacity: '0', transform: 'translateY(12px)', filter: 'blur(4px)' },
+					to: { opacity: '1', transform: 'translateY(0)', filter: 'blur(0)' }
+				},
+				'blur-fade-down': {
+					from: { opacity: '0', transform: 'translateY(-12px)', filter: 'blur(4px)' },
+					to: { opacity: '1', transform: 'translateY(0)', filter: 'blur(0)' }
+				},
+				'blur-fade-left': {
+					from: { opacity: '0', transform: 'translateX(12px)', filter: 'blur(4px)' },
+					to: { opacity: '1', transform: 'translateX(0)', filter: 'blur(0)' }
+				},
+				'blur-fade-right': {
+					from: { opacity: '0', transform: 'translateX(-12px)', filter: 'blur(4px)' },
+					to: { opacity: '1', transform: 'translateX(0)', filter: 'blur(0)' }
 				},
 				'scale-in': {
 					from: { opacity: '0', transform: 'scale(0.95)' },
@@ -179,11 +209,27 @@ export default {
 			animation: {
 				'fade-in': 'fade-in var(--duration-normal, 200ms) var(--ease-out, ease-out)',
 				'fade-in-up': 'fade-in-up var(--duration-normal, 200ms) var(--ease-out, ease-out)',
+				'blur-fade-up': 'blur-fade-up 400ms ease-out both',
+				'blur-fade-down': 'blur-fade-down 400ms ease-out both',
+				'blur-fade-left': 'blur-fade-left 400ms ease-out both',
+				'blur-fade-right': 'blur-fade-right 400ms ease-out both',
 				'scale-in': 'scale-in var(--duration-fast, 150ms) var(--ease-out, ease-out)',
 				'shimmer': 'shimmer 2s infinite ease-in-out',
 				'pulse-status': 'pulse-status 2s infinite'
 			}
 		}
 	},
-	plugins: []
+	plugins: [
+		// Animation delay utilities plugin
+		plugin(function ({ matchUtilities, theme }) {
+			matchUtilities(
+				{
+					'delay': (value) => ({
+						animationDelay: value
+					})
+				},
+				{ values: theme('animationDelay') }
+			);
+		})
+	]
 };
