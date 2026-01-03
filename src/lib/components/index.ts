@@ -1,4 +1,5 @@
 // Accessibility components
+export { default as Announcer } from './Announcer.svelte';
 export { default as LiveRegion } from './LiveRegion.svelte';
 export { default as SkipLink } from './SkipLink.svelte';
 
