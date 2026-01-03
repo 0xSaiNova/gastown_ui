@@ -12,6 +12,7 @@ export { default as StatusIndicator } from './StatusIndicator.svelte';
 export type { StatusIndicatorProps } from './StatusIndicator.svelte';
 
 // Layout components
+export { default as AgentDetailLayout } from './AgentDetailLayout.svelte';
 export { default as DashboardLayout } from './DashboardLayout.svelte';
 
 // Skeleton components
