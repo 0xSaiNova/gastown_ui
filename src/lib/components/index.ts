@@ -1,4 +1,5 @@
 // Accessibility components
+export { default as LiveRegion } from './LiveRegion.svelte';
 export { default as SkipLink } from './SkipLink.svelte';
 
 // UI components
