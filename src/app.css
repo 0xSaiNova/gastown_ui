@@ -235,6 +235,54 @@
 		@apply opacity-10;
 	}
 
+	/* === Safe Area Insets (notched devices) === */
+	.pt-safe {
+		padding-top: env(safe-area-inset-top, 0px);
+	}
+
+	.pb-safe {
+		padding-bottom: env(safe-area-inset-bottom, 0px);
+	}
+
+	.pl-safe {
+		padding-left: env(safe-area-inset-left, 0px);
+	}
+
+	.pr-safe {
+		padding-right: env(safe-area-inset-right, 0px);
+	}
+
+	.px-safe {
+		padding-left: env(safe-area-inset-left, 0px);
+		padding-right: env(safe-area-inset-right, 0px);
+	}
+
+	.py-safe {
+		padding-top: env(safe-area-inset-top, 0px);
+		padding-bottom: env(safe-area-inset-bottom, 0px);
+	}
+
+	.p-safe {
+		padding-top: env(safe-area-inset-top, 0px);
+		padding-right: env(safe-area-inset-right, 0px);
+		padding-bottom: env(safe-area-inset-bottom, 0px);
+		padding-left: env(safe-area-inset-left, 0px);
+	}
+
+	/* Safe area margins */
+	.mt-safe {
+		margin-top: env(safe-area-inset-top, 0px);
+	}
+
+	.mb-safe {
+		margin-bottom: env(safe-area-inset-bottom, 0px);
+	}
+
+	/* Min-height accounting for safe areas */
+	.min-h-safe-screen {
+		min-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+	}
+
 	/* Focus visible ring */
 	.focus-ring {
 		@apply outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
