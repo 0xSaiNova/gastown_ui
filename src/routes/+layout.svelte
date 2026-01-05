@@ -3,6 +3,7 @@
 	import { SkipLink, Announcer, BottomNav } from '$lib/components';
 	import { preloadRoute } from '$lib/preload';
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 
 	interface Props {
 		children: import('svelte').Snippet;
@@ -10,15 +11,21 @@
 
 	let { children }: Props = $props();
 
-	// Navigation items for bottom nav
-	const navItems = [
+	// Badge counts (fetched from API)
+	let unreadMail = $state(0);
+	let escalationCount = $state(0);
+
+	// Navigation items for bottom nav (reactive for badge updates)
+	const navItems = $derived([
 		{ id: 'dashboard', label: 'Dashboard', href: '/', icon: '🏠' },
 		{ id: 'agents', label: 'Agents', href: '/agents', icon: '🤖' },
 		{ id: 'work', label: 'Work', href: '/work', icon: '🎯' },
-		{ id: 'mail', label: 'Mail', href: '/mail', icon: '📬' },
+		{ id: 'convoys', label: 'Convoys', href: '/convoys', icon: '🚛' },
 		{ id: 'queue', label: 'Queue', href: '/queue', icon: '📋' },
+		{ id: 'mail', label: 'Mail', href: '/mail', icon: '📬', badge: unreadMail || undefined },
+		{ id: 'escalations', label: 'Alerts', href: '/escalations', icon: '🚨', badge: escalationCount || undefined },
 		{ id: 'logs', label: 'Logs', href: '/logs', icon: '📜' }
-	];
+	]);
 
 	// Determine active nav item from current route
 	const activeId = $derived.by(() => {
@@ -35,6 +42,36 @@
 	function handleNavHover(href: string) {
 		preloadRoute(href);
 	}
+
+	// Fetch badge counts from status API
+	async function fetchBadgeCounts() {
+		try {
+			const res = await fetch('/api/gastown/status');
+			if (!res.ok) return;
+			const status = await res.json();
+
+			// Overseer unread mail
+			unreadMail = status.overseer?.unread_mail ?? 0;
+
+			// Sum agent unread mail as well
+			const agentMail = status.agents?.reduce((sum: number, a: { unread_mail?: number }) => sum + (a.unread_mail ?? 0), 0) ?? 0;
+			const rigAgentMail = status.rigs?.reduce((sum: number, r: { agents?: Array<{ unread_mail?: number }> }) =>
+				sum + (r.agents?.reduce((s: number, a) => s + (a.unread_mail ?? 0), 0) ?? 0), 0) ?? 0;
+			unreadMail += agentMail + rigAgentMail;
+
+			// Escalation count (placeholder - will be implemented when escalations API is ready)
+			escalationCount = status.escalation_count ?? 0;
+		} catch (e) {
+			console.error('Failed to fetch badge counts:', e);
+		}
+	}
+
+	// Poll for badge counts
+	onMount(() => {
+		fetchBadgeCounts();
+		const interval = setInterval(fetchBadgeCounts, 30000); // Poll every 30s
+		return () => clearInterval(interval);
+	});
 </script>
 
 <svelte:head>
