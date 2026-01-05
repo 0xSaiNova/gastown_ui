@@ -6,7 +6,9 @@ export { default as SkipLink } from './SkipLink.svelte';
 // UI components
 export { default as AgentCard } from './AgentCard.svelte';
 export { default as BottomNav } from './BottomNav.svelte';
+export { default as Button } from './Button.svelte';
 export { default as GridPattern } from './GridPattern.svelte';
+export { default as Input } from './Input.svelte';
 export { default as LogEntry } from './LogEntry.svelte';
 export { default as NumberCounter } from './NumberCounter.svelte';
 export { default as ProgressBar } from './ProgressBar.svelte';
@@ -38,6 +40,7 @@ export { default as UpdatePrompt } from './UpdatePrompt.svelte';
 export { default as Toast } from './Toast.svelte';
 export { default as ToastContainer } from './ToastContainer.svelte';
 export { default as OfflineIndicator } from './OfflineIndicator.svelte';
+export { default as ConnectionLost } from './ConnectionLost.svelte';
 
 // Search components
 export { default as GlobalSearch } from './GlobalSearch.svelte';
