@@ -23,6 +23,7 @@
 		label: string;
 		href?: string;
 		icon?: string;
+		badge?: number | string;
 	}
 
 	interface Props {
@@ -60,16 +61,28 @@
 			{@const isActive = item.id === activeId}
 			<a
 				href={item.href ?? '#'}
-				class={navItemVariants({ active: isActive })}
+				class={cn(navItemVariants({ active: isActive }), 'relative')}
 				aria-current={isActive ? 'page' : undefined}
 				onclick={triggerHaptic}
 			>
-				<!-- Icon slot -->
-				{#if item.icon}
-					<span class="text-xl" aria-hidden="true">{item.icon}</span>
-				{:else}
-					<span class="w-6 h-6 rounded-full bg-current opacity-20" aria-hidden="true"></span>
-				{/if}
+				<!-- Icon with badge -->
+				<span class="relative">
+					{#if item.icon}
+						<span class="text-xl" aria-hidden="true">{item.icon}</span>
+					{:else}
+						<span class="w-6 h-6 rounded-full bg-current opacity-20" aria-hidden="true"></span>
+					{/if}
+
+					<!-- Badge -->
+					{#if item.badge}
+						<span
+							class="absolute -top-1 -right-2 min-w-[16px] h-4 px-1 text-[10px] font-bold text-white bg-destructive rounded-full flex items-center justify-center"
+							aria-label="{item.badge} notifications"
+						>
+							{typeof item.badge === 'number' && item.badge > 99 ? '99+' : item.badge}
+						</span>
+					{/if}
+				</span>
 
 				<!-- Label -->
 				<span class="text-2xs font-medium">{item.label}</span>
