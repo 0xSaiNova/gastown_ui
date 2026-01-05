@@ -8,7 +8,7 @@
 	 * WorkflowStep variant definitions
 	 */
 	const stepVariants = tv({
-		base: 'flex-shrink-0 w-48 panel-glass p-4 rounded-lg transition-all duration-200',
+		base: 'flex-shrink-0 w-48 bg-card text-card-foreground border border-border p-4 rounded-lg shadow-sm transition-all duration-200',
 		variants: {
 			status: {
 				pending: 'opacity-50',

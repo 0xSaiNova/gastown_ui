@@ -1,25 +1,29 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { tv, type VariantProps } from 'tailwind-variants';
+	import { cn } from '$lib/utils';
 
 	/**
-	 * Input variant definitions using tailwind-variants
-	 * Follows shadcn/ui patterns with extended features for labels, icons, and validation
+	 * Input component following shadcn patterns with tailwind-variants.
+	 * Supports icon prefix, password visibility toggle, validation states,
+	 * and file input variant.
 	 */
-	export const inputVariants = tv({
+	const inputVariants = tv({
 		slots: {
 			wrapper: 'relative w-full',
 			label: 'block text-sm font-medium text-foreground mb-1.5',
 			container: [
-				'relative flex items-center w-full h-10',
+				'relative flex items-center w-full',
 				'bg-background border border-input rounded-md',
 				'transition-colors duration-150',
-				'has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2'
+				'focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2'
 			],
 			input: [
-				'flex-1 h-full w-full bg-transparent text-foreground placeholder:text-muted-foreground',
-				'text-sm px-3 py-2',
+				'flex h-10 w-full bg-transparent text-foreground placeholder:text-muted-foreground',
+				'text-sm',
+				'px-3 py-2',
 				'focus-visible:outline-none',
 				'disabled:cursor-not-allowed disabled:opacity-50',
+				// File input styling
 				'file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground'
 			],
 			iconWrapper: 'flex items-center justify-center text-muted-foreground pl-3',
@@ -41,19 +45,16 @@
 			},
 			size: {
 				sm: {
-					container: 'h-9',
-					input: 'px-2.5 text-xs',
+					input: 'h-9 px-2.5 text-xs',
 					iconWrapper: 'pl-2.5',
 					label: 'text-xs'
 				},
 				md: {
-					container: 'h-10',
-					input: 'px-3 text-sm',
+					input: 'h-10 px-3 text-sm',
 					iconWrapper: 'pl-3'
 				},
 				lg: {
-					container: 'h-11',
-					input: 'px-4 text-base',
+					input: 'h-12 px-4 text-base',
 					iconWrapper: 'pl-4',
 					label: 'text-base'
 				}
@@ -61,11 +62,11 @@
 			validationState: {
 				default: {},
 				error: {
-					container: 'border-destructive has-[:focus-visible]:ring-destructive/20',
+					container: 'border-destructive focus-within:ring-destructive',
 					helperText: 'text-destructive'
 				},
 				success: {
-					container: 'border-status-online has-[:focus-visible]:ring-status-online/20',
+					container: 'border-status-online focus-within:ring-status-online',
 					helperText: 'text-status-online'
 				}
 			},
@@ -93,25 +94,8 @@
 
 	type InputVariantProps = VariantProps<typeof inputVariants>;
 
-	export interface InputProps {
-		type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search' | 'file';
-		variant?: InputVariantProps['variant'];
-		size?: InputVariantProps['size'];
-		validationState?: InputVariantProps['validationState'];
-		label?: string;
-		helperText?: string;
-		errorMessage?: string;
-		disabled?: boolean;
-		required?: boolean;
-		class?: string;
-	}
-</script>
-
-<script lang="ts">
-	import { cn } from '$lib/utils';
-
-	interface Props extends Omit<InputVariantProps, keyof InputProps>, InputProps {
-		// Core props (file type added for file uploads)
+	interface Props extends InputVariantProps {
+		// Core props
 		type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search' | 'file';
 		value?: string;
 		placeholder?: string;

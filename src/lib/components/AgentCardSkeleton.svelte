@@ -7,7 +7,7 @@
 
 <!-- Agent Card Skeleton: matches the AgentCard component layout -->
 <div
-	class={cn('panel-glass p-4 space-y-3', className)}
+	class={cn('bg-card text-card-foreground border border-border rounded-lg shadow-sm p-4 space-y-3', className)}
 	role="status"
 	aria-label="Loading agent card"
 	aria-busy="true"
