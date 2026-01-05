@@ -15,6 +15,7 @@
 		{ id: 'dashboard', label: 'Dashboard', href: '/', icon: '🏠' },
 		{ id: 'agents', label: 'Agents', href: '/agents', icon: '🤖' },
 		{ id: 'work', label: 'Work', href: '/work', icon: '🎯' },
+		{ id: 'mail', label: 'Mail', href: '/mail', icon: '📬' },
 		{ id: 'queue', label: 'Queue', href: '/queue', icon: '📋' },
 		{ id: 'logs', label: 'Logs', href: '/logs', icon: '📜' }
 	];
