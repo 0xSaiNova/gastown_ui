@@ -14,9 +14,9 @@
 	const navItems = [
 		{ id: 'dashboard', label: 'Dashboard', href: '/', icon: '🏠' },
 		{ id: 'agents', label: 'Agents', href: '/agents', icon: '🤖' },
+		{ id: 'mail', label: 'Mail', href: '/mail', icon: '📬' },
 		{ id: 'queue', label: 'Queue', href: '/queue', icon: '📋' },
-		{ id: 'logs', label: 'Logs', href: '/logs', icon: '📜' },
-		{ id: 'workflows', label: 'Workflows', href: '/workflows', icon: '⚡' }
+		{ id: 'logs', label: 'Logs', href: '/logs', icon: '📜' }
 	];
 
 	// Determine active nav item from current route
