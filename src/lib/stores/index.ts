@@ -11,3 +11,14 @@ export {
 	type QueueUpdatePayload,
 	type WorkflowUpdatePayload
 } from './websocket.svelte';
+export {
+	syncStore,
+	createSyncStore,
+	useSyncStatus,
+	type SyncStatus,
+	type VersionedData,
+	type SyncOperation,
+	type PendingSyncItem,
+	type SyncEvent,
+	type ConflictStrategy
+} from './sync.svelte';

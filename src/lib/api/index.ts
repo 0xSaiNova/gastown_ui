@@ -24,3 +24,18 @@ export { DEFAULT_CLIENT_CONFIG } from './types';
 
 // Client
 export { ApiClient, apiClient, createApiClient, isApiError } from './client';
+
+// Realtime handlers
+export {
+	realtimeHandlers,
+	getAgentById,
+	getLogsByAgent,
+	getLogsByLevel,
+	getWorkflowById,
+	getActiveWorkflows,
+	type Agent,
+	type LogEntry,
+	type QueueItem,
+	type WorkflowStep,
+	type Workflow
+} from './handlers';

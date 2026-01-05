@@ -60,3 +60,18 @@ export {
 	type QueueUpdatePayload,
 	type WorkflowUpdatePayload
 } from './stores/websocket.svelte';
+
+// Export real-time handlers (client-side only)
+export {
+	realtimeHandlers,
+	getAgentById,
+	getLogsByAgent,
+	getLogsByLevel,
+	getWorkflowById,
+	getActiveWorkflows,
+	type Agent,
+	type LogEntry,
+	type QueueItem,
+	type WorkflowStep,
+	type Workflow
+} from './api';
