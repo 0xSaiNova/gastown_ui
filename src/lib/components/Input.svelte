@@ -3,8 +3,9 @@
 	import { cn } from '$lib/utils';
 
 	/**
-	 * Industrial-style input component with icon prefix, corner accents,
-	 * password visibility toggle, and validation states.
+	 * Input component following shadcn patterns with tailwind-variants.
+	 * Supports icon prefix, password visibility toggle, validation states,
+	 * and file input variant.
 	 */
 	const inputVariants = tv({
 		slots: {
@@ -12,15 +13,18 @@
 			label: 'block text-sm font-medium text-foreground mb-1.5',
 			container: [
 				'relative flex items-center w-full',
-				'bg-input border border-border rounded-lg',
-				'transition-all duration-200 ease-out',
-				'focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20'
+				'bg-background border border-input rounded-md',
+				'transition-colors duration-150',
+				'focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2'
 			],
 			input: [
-				'flex-1 w-full bg-transparent text-foreground placeholder:text-muted-foreground',
-				'text-sm outline-none',
-				'py-2.5 px-3',
-				'disabled:cursor-not-allowed disabled:opacity-50'
+				'flex h-10 w-full bg-transparent text-foreground placeholder:text-muted-foreground',
+				'text-sm',
+				'px-3 py-2',
+				'focus-visible:outline-none',
+				'disabled:cursor-not-allowed disabled:opacity-50',
+				// File input styling
+				'file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground'
 			],
 			iconWrapper: 'flex items-center justify-center text-muted-foreground pl-3',
 			actionWrapper: 'flex items-center justify-center pr-2',
@@ -41,16 +45,16 @@
 			},
 			size: {
 				sm: {
-					input: 'py-1.5 px-2.5 text-xs',
+					input: 'h-9 px-2.5 text-xs',
 					iconWrapper: 'pl-2.5',
 					label: 'text-xs'
 				},
 				md: {
-					input: 'py-2.5 px-3 text-sm',
+					input: 'h-10 px-3 text-sm',
 					iconWrapper: 'pl-3'
 				},
 				lg: {
-					input: 'py-3 px-4 text-base',
+					input: 'h-12 px-4 text-base',
 					iconWrapper: 'pl-4',
 					label: 'text-base'
 				}
@@ -58,11 +62,11 @@
 			validationState: {
 				default: {},
 				error: {
-					container: 'border-destructive focus-within:border-destructive focus-within:ring-destructive/20',
+					container: 'border-destructive focus-within:ring-destructive',
 					helperText: 'text-destructive'
 				},
 				success: {
-					container: 'border-status-online focus-within:border-status-online focus-within:ring-status-online/20',
+					container: 'border-status-online focus-within:ring-status-online',
 					helperText: 'text-status-online'
 				}
 			},
@@ -92,7 +96,7 @@
 
 	interface Props extends InputVariantProps {
 		// Core props
-		type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search';
+		type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search' | 'file';
 		value?: string;
 		placeholder?: string;
 		name?: string;
