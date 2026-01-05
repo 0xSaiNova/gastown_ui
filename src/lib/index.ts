@@ -4,6 +4,14 @@ export * from './components';
 // Export utilities
 export { cn } from './utils';
 export { STAGGER_DELAY, applyStaggerDelays, clearStaggerDelays, stagger, prefersReducedMotion } from './stagger';
+export {
+	sanitizeHtml,
+	escapeText,
+	sanitizeUrl,
+	createSanitizer,
+	safeSanitize,
+	isString
+} from './sanitize';
 
 // Export service worker utilities
 export {
