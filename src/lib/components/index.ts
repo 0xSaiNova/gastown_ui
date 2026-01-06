@@ -9,6 +9,7 @@ export { default as Badge, badgeVariants, type BadgeVariant, type BadgeSize, typ
 export { default as BottomNav } from './BottomNav.svelte';
 export { default as Button, buttonVariants, type ButtonProps, type ButtonVariants } from './Button.svelte';
 export { default as GridPattern } from './GridPattern.svelte';
+export { default as Icon } from './Icon.svelte';
 export { default as Input } from './Input.svelte';
 export { default as LogEntry } from './LogEntry.svelte';
 export { default as NumberCounter } from './NumberCounter.svelte';

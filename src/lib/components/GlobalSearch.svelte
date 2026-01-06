@@ -2,6 +2,7 @@
 	import { cn } from '$lib/utils';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { Search } from 'lucide-svelte';
 
 	interface Props {
 		class?: string;
@@ -359,9 +360,7 @@
 	)}
 	aria-label="Open search"
 >
-	<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-	</svg>
+	<Search class="w-4 h-4" />
 	<span class="hidden sm:inline text-sm">Search...</span>
 	<kbd class="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-xs font-mono bg-background rounded border border-border">
 		{isMac ? '⌘' : 'Ctrl'}K
@@ -393,9 +392,7 @@
 				<label for="global-search-input" class="sr-only" id="search-dialog-title">
 					Search agents, issues, convoys, or commands
 				</label>
-				<svg class="w-5 h-5 text-muted-foreground flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-				</svg>
+				<Search class="w-5 h-5 text-muted-foreground flex-shrink-0" aria-hidden="true" />
 				<input
 					bind:this={inputRef}
 					bind:value={query}
