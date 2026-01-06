@@ -12,6 +12,7 @@ export { default as LogEntry } from './LogEntry.svelte';
 export { default as NumberCounter } from './NumberCounter.svelte';
 export { default as ProgressBar } from './ProgressBar.svelte';
 export { default as ShimmerText } from './ShimmerText.svelte';
+export { default as StatusBadge } from './StatusBadge.svelte';
 export { default as StatusIndicator } from './StatusIndicator.svelte';
 
 // Layout components
