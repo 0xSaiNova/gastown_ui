@@ -19,6 +19,7 @@ export { default as ShimmerText } from './ShimmerText.svelte';
 export { default as StatusIndicator, statusIndicatorVariants, type StatusIndicatorStatus, type StatusIndicatorSize, type StatusIndicatorProps } from './StatusIndicator.svelte';
 export { default as StatusBadge, statusBadgeVariants, type StatusBadgeProps, type StatusBadgeVariants } from './StatusBadge.svelte';
 export { default as EmptyState, emptyStateVariants, emptyStatePresets, type EmptyStatePreset, type EmptyStateProps, type EmptyStateVariants } from './EmptyState.svelte';
+export { default as StatsCard, statsCardVariants, type TrendDirection, type SparklinePoint, type StatusBreakdown, type StatsCardProps, type StatsCardVariants } from './StatsCard.svelte';
 
 // Layout components
 export { default as AgentDetailLayout } from './AgentDetailLayout.svelte';
