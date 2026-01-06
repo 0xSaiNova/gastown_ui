@@ -1,16 +1,34 @@
 <script lang="ts">
+	/**
+	 * Sidebar Component - Desktop Navigation
+	 *
+	 * Design tokens used:
+	 * - Animation: ease-out-expo for collapse, 200ms transitions
+	 * - Typography: label-xs (10px) for group headers
+	 * - Shadows: subtle left glow for active state
+	 */
 	import { tv } from 'tailwind-variants';
 	import { cn } from '$lib/utils';
 	import { onMount } from 'svelte';
 
 	/**
 	 * Navigation item styling variants
+	 * - Active: 3px right border accent + subtle left glow
+	 * - Hover: 200ms ease-out transition
 	 */
 	const navItemVariants = tv({
-		base: 'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+		base: [
+			'relative flex items-center gap-3 px-3 py-2.5 rounded-lg',
+			'transition-all duration-200 ease-out',
+			'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
+		],
 		variants: {
 			active: {
-				true: 'bg-primary/10 text-primary',
+				true: [
+					'bg-primary/10 text-primary',
+					'border-r-[3px] border-primary',
+					'shadow-[inset_4px_0_8px_-4px_hsl(var(--primary)/0.3)]'
+				],
 				false: 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
 			},
 			collapsed: {
@@ -26,9 +44,14 @@
 
 	/**
 	 * Group header styling
+	 * - 10px font, 0.1em letter-spacing, 60% opacity
 	 */
 	const groupHeaderVariants = tv({
-		base: 'text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 px-3 transition-opacity duration-200',
+		base: [
+			'text-[10px] font-semibold uppercase tracking-[0.1em]',
+			'text-muted-foreground/60 mb-2 px-3',
+			'transition-opacity duration-200'
+		],
 		variants: {
 			collapsed: {
 				true: 'opacity-0 sr-only',
@@ -36,6 +59,38 @@
 			}
 		}
 	});
+
+	// Tooltip state for collapsed sidebar
+	let tooltipVisible = $state(false);
+	let tooltipText = $state('');
+	let tooltipPosition = $state({ x: 0, y: 0 });
+	let tooltipTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	function showTooltip(event: MouseEvent, label: string) {
+		if (!collapsed) return;
+
+		const target = event.currentTarget as HTMLElement;
+		const rect = target.getBoundingClientRect();
+
+		tooltipText = label;
+		tooltipPosition = {
+			x: rect.right + 8,
+			y: rect.top + rect.height / 2
+		};
+
+		// Delay showing tooltip slightly
+		tooltipTimeout = setTimeout(() => {
+			tooltipVisible = true;
+		}, 150);
+	}
+
+	function hideTooltip() {
+		if (tooltipTimeout) {
+			clearTimeout(tooltipTimeout);
+			tooltipTimeout = null;
+		}
+		tooltipVisible = false;
+	}
 
 	interface NavItem {
 		id: string;
@@ -171,8 +226,12 @@
 		onkeydown={handleKeyDown}
 	>
 		{#each navGroups as group, groupIndex}
+			<!-- Section divider with 24px vertical margins (except first group) -->
+			{#if groupIndex > 0}
+				<div class="my-6 mx-3 h-px bg-border/50" aria-hidden="true"></div>
+			{/if}
 			<div
-				class={cn('mb-6', groupIndex > 0 && 'mt-2')}
+				class="mb-4"
 				role="group"
 				aria-labelledby={`nav-group-${group.id}`}
 			>
@@ -194,7 +253,8 @@
 								data-nav-item
 								tabindex={focusedIndex === globalIndex ? 0 : -1}
 								onfocus={() => focusedIndex = globalIndex}
-								title={collapsed ? item.label : undefined}
+								onmouseenter={(e) => showTooltip(e, item.label)}
+								onmouseleave={hideTooltip}
 							>
 								<span class="relative shrink-0">
 									{#if item.icon}
@@ -250,3 +310,19 @@
 		</button>
 	</div>
 </aside>
+
+<!-- Custom tooltip for collapsed state -->
+{#if tooltipVisible && collapsed}
+	<div
+		class="fixed z-50 px-2.5 py-1.5 text-sm font-medium text-popover-foreground bg-popover border border-border rounded-md shadow-lg pointer-events-none animate-fade-in"
+		style="left: {tooltipPosition.x}px; top: {tooltipPosition.y}px; transform: translateY(-50%);"
+		role="tooltip"
+	>
+		{tooltipText}
+		<!-- Arrow pointing left -->
+		<div
+			class="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 border-8 border-transparent border-r-popover"
+			aria-hidden="true"
+		></div>
+	</div>
+{/if}
