@@ -26,7 +26,7 @@
 	}
 
 	let {
-		title = 'Gas Town',
+		title = 'gastown_exp',
 		systemStatus = 'running',
 		class: className = '',
 		agents,
