@@ -10,6 +10,7 @@
 	import { tv } from 'tailwind-variants';
 	import { cn } from '$lib/utils';
 	import { onMount } from 'svelte';
+	import { Fuel } from 'lucide-svelte';
 
 	/**
 	 * Navigation item styling variants
@@ -209,10 +210,10 @@
 	<!-- Logo / Header -->
 	<div class="flex items-center h-16 px-4 border-b border-border shrink-0">
 		{#if collapsed}
-			<span class="text-2xl" aria-hidden="true">&#x26FD;</span>
+			<Fuel class="w-6 h-6 text-foreground" strokeWidth={2} aria-hidden="true" />
 		{:else}
 			<div class="flex items-center gap-2">
-				<span class="text-2xl" aria-hidden="true">&#x26FD;</span>
+				<Fuel class="w-6 h-6 text-foreground" strokeWidth={2} aria-hidden="true" />
 				<span class="font-display font-semibold text-lg">Gas Town</span>
 			</div>
 		{/if}
