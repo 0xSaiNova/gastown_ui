@@ -2,46 +2,46 @@
 	import { tv } from 'tailwind-variants';
 	import { cn } from '$lib/utils';
 	import { X, MoreHorizontal } from 'lucide-svelte';
-	import type { ComponentType } from 'svelte';
+	/**
+	 * Navigation item type - exported for use in other components
+	 */
+	export interface NavItem {
+		id: string;
+		label: string;
+		href?: string;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		icon?: any;
+		badge?: number | string;
+	}
 
 	/**
 	 * Navigation item variant definitions
-	 * Dark industrial aesthetic with glow effects
+	 * Dark industrial aesthetic with animated states
 	 */
 	const navItemVariants = tv({
 		base: [
 			'flex flex-col items-center justify-center gap-1',
-			'min-w-[64px] min-h-[44px] py-2 px-3',
-			'transition-all duration-200'
+			'min-w-[64px] min-h-[48px] py-2 px-3',
+			'transition-all duration-fast ease-out-expo',
+			'active:scale-95 active:transition-none'
 		],
 		variants: {
 			active: {
-				true: 'text-gas-primary shadow-[0_0_10px_#00dba8]',
-				false: 'text-muted-foreground hover:text-foreground'
+				true: [
+					'text-primary',
+					'[&_.nav-icon]:scale-100 [&_.nav-icon]:opacity-100'
+				],
+				false: [
+					'text-muted-foreground hover:text-foreground',
+					'[&_.nav-icon]:scale-90 [&_.nav-icon]:opacity-60',
+					'hover:[&_.nav-icon]:scale-95 hover:[&_.nav-icon]:opacity-80'
+				]
 			}
 		},
 		defaultVariants: {
 			active: false
 		}
 	});
-
-	/**
-	 * Active indicator with glow effect
-	 */
-	const activeIndicatorClass = [
-		'absolute bottom-0 left-1/2 -translate-x-1/2',
-		'w-10 h-1 rounded-full',
-		'bg-gas-primary',
-		'shadow-[0_0_10px_hsl(var(--gas-primary))]'
-	].join(' ');
-
-	interface NavItem {
-		id: string;
-		label: string;
-		href?: string;
-		icon?: ComponentType;
-		badge?: number | string;
-	}
 
 	interface Props {
 		items?: NavItem[];
@@ -67,6 +67,24 @@
 
 	// Check if active item is in overflow
 	const activeInOverflow = $derived(overflowItems.some(item => item.id === activeId));
+
+	// Get active item index for animated underline positioning
+	const displayItems = $derived(hasOverflow ? [...visibleItems, { id: '__more__', label: 'More' }] : items);
+	const activeIndex = $derived(() => {
+		if (activeInOverflow || showOverflow) {
+			// More button is active
+			return displayItems.length - 1;
+		}
+		return displayItems.findIndex(item => item.id === activeId);
+	});
+
+	// Calculate underline offset based on active index
+	const underlineOffset = $derived(() => {
+		const idx = activeIndex();
+		if (idx < 0) return 0;
+		const itemWidth = 100 / displayItems.length;
+		return idx * itemWidth + itemWidth / 2;
+	});
 
 	// Trigger haptic feedback where supported
 	function triggerHaptic() {
@@ -94,45 +112,43 @@
 	></button>
 {/if}
 
-<!-- Overflow panel -->
+<!-- Overflow panel with spring animation -->
 {#if showOverflow}
 	<div
-		class="fixed bottom-16 left-0 right-0 z-50 pb-safe px-safe animate-in slide-in-from-bottom duration-200"
+		class="fixed bottom-16 left-0 right-0 z-50 pb-safe px-safe"
+		style="animation: slideInUp 300ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards"
 		role="menu"
 		aria-label="Additional navigation options"
 	>
-		<div class="bg-gas-surface/95 backdrop-blur-md border border-gas-border rounded-t-xl mx-2 mb-2 p-2 max-h-[60vh] overflow-y-auto">
-			<div class="grid grid-cols-4 gap-1" role="none">
+		<div class="bg-card/95 backdrop-blur-xl border border-border rounded-t-2xl mx-2 mb-2 p-3 max-h-[60vh] overflow-y-auto shadow-xl">
+			<div class="grid grid-cols-4 gap-2" role="none">
 				{#each overflowItems as item}
 					{@const isActive = item.id === activeId}
 					<a
 						href={item.href ?? '#'}
-						class={cn(navItemVariants({ active: isActive }), 'relative rounded-lg')}
+						class={cn(navItemVariants({ active: isActive }), 'relative rounded-xl')}
 						role="menuitem"
 						aria-current={isActive ? 'page' : undefined}
 						onclick={() => { triggerHaptic(); closeOverflow(); }}
 					>
 						<span class="relative">
 							{#if item.icon}
-								<span class="w-6 h-6 flex items-center justify-center" aria-hidden="true">
-									<item.icon size={20} strokeWidth={2} />
+								<span class="nav-icon w-6 h-6 flex items-center justify-center transition-all duration-fast" aria-hidden="true">
+									<item.icon size={20} strokeWidth={isActive ? 2.5 : 2} />
 								</span>
 							{:else}
-								<span class="w-6 h-6 rounded-full bg-current opacity-20" aria-hidden="true"></span>
+								<span class="nav-icon w-6 h-6 rounded-full bg-current opacity-20 transition-all duration-fast" aria-hidden="true"></span>
 							{/if}
 							{#if item.badge}
 								<span
-									class="absolute -top-1 -right-2 min-w-[16px] h-4 px-1 text-[10px] font-bold text-white bg-destructive rounded-full flex items-center justify-center"
+									class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1.5 text-[10px] font-bold text-destructive-foreground bg-destructive rounded-full flex items-center justify-center shadow-sm"
 									aria-label="{item.badge} notifications"
 								>
 									{typeof item.badge === 'number' && item.badge > 99 ? '99+' : item.badge}
 								</span>
 							{/if}
 						</span>
-						<span class="text-2xs font-medium uppercase tracking-wider">{item.label}</span>
-						{#if isActive}
-							<span class={activeIndicatorClass} aria-hidden="true"></span>
-						{/if}
+						<span class="text-label-xs uppercase tracking-wider mt-0.5">{item.label}</span>
 					</a>
 				{/each}
 			</div>
@@ -143,14 +159,23 @@
 <nav
 	class={cn(
 		'fixed bottom-0 left-0 right-0 z-50',
-		'bg-gas-surface/90 backdrop-blur-md',
-		'border-t border-gas-border',
+		'bg-card/90 backdrop-blur-xl',
+		'border-t border-border',
 		'pb-safe px-safe',
 		className
 	)}
 	aria-label="Bottom navigation"
 >
-	<div class="flex items-center justify-around max-w-lg mx-auto">
+	<!-- Animated underline indicator -->
+	{#if activeIndex() >= 0}
+		<div
+			class="absolute top-0 h-0.5 w-10 bg-primary rounded-full shadow-glow-primary transition-all duration-normal ease-spring"
+			style="left: calc({underlineOffset()}% - 20px)"
+			aria-hidden="true"
+		></div>
+	{/if}
+
+	<div class="flex items-center justify-around max-w-lg mx-auto relative">
 		{#if hasOverflow}
 			<!-- Show visible items + More button -->
 			{#each visibleItems as item}
@@ -163,25 +188,22 @@
 				>
 					<span class="relative">
 						{#if item.icon}
-							<span class="w-6 h-6 flex items-center justify-center" aria-hidden="true">
-								<item.icon size={20} strokeWidth={2} />
+							<span class="nav-icon w-6 h-6 flex items-center justify-center transition-all duration-fast" aria-hidden="true">
+								<item.icon size={20} strokeWidth={isActive ? 2.5 : 2} />
 							</span>
 						{:else}
-							<span class="w-6 h-6 rounded-full bg-current opacity-20" aria-hidden="true"></span>
+							<span class="nav-icon w-6 h-6 rounded-full bg-current opacity-20 transition-all duration-fast" aria-hidden="true"></span>
 						{/if}
 						{#if item.badge}
 							<span
-								class="absolute -top-1 -right-2 min-w-[16px] h-4 px-1 text-[10px] font-bold text-white bg-destructive rounded-full flex items-center justify-center"
+								class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1.5 text-[10px] font-bold text-destructive-foreground bg-destructive rounded-full flex items-center justify-center shadow-sm"
 								aria-label="{item.badge} notifications"
 							>
 								{typeof item.badge === 'number' && item.badge > 99 ? '99+' : item.badge}
 							</span>
 						{/if}
 					</span>
-					<span class="text-2xs font-medium uppercase tracking-wider">{item.label}</span>
-					{#if isActive}
-						<span class={activeIndicatorClass} aria-hidden="true"></span>
-					{/if}
+					<span class="text-label-xs uppercase tracking-wider mt-0.5">{item.label}</span>
 				</a>
 			{/each}
 			<!-- More button -->
@@ -193,24 +215,21 @@
 				aria-label="More navigation options"
 			>
 				<span class="relative">
-					<span class="w-6 h-6 flex items-center justify-center" aria-hidden="true">
+					<span class="nav-icon w-6 h-6 flex items-center justify-center transition-all duration-fast" aria-hidden="true">
 						{#if showOverflow}
-							<X size={20} strokeWidth={2} />
+							<X size={20} strokeWidth={2.5} />
 						{:else}
-							<MoreHorizontal size={20} strokeWidth={2} />
+							<MoreHorizontal size={20} strokeWidth={activeInOverflow ? 2.5 : 2} />
 						{/if}
 					</span>
 					{#if activeInOverflow && !showOverflow}
 						<span
-							class="absolute -top-1 -right-2 w-2 h-2 bg-gas-primary rounded-full"
+							class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full shadow-glow-primary"
 							aria-hidden="true"
 						></span>
 					{/if}
 				</span>
-				<span class="text-2xs font-medium uppercase tracking-wider">More</span>
-				{#if showOverflow}
-					<span class={activeIndicatorClass} aria-hidden="true"></span>
-				{/if}
+				<span class="text-label-xs uppercase tracking-wider mt-0.5">More</span>
 			</button>
 		{:else}
 			<!-- Show all items when no overflow needed -->
@@ -224,25 +243,22 @@
 				>
 					<span class="relative">
 						{#if item.icon}
-							<span class="w-6 h-6 flex items-center justify-center" aria-hidden="true">
-								<item.icon size={20} strokeWidth={2} />
+							<span class="nav-icon w-6 h-6 flex items-center justify-center transition-all duration-fast" aria-hidden="true">
+								<item.icon size={20} strokeWidth={isActive ? 2.5 : 2} />
 							</span>
 						{:else}
-							<span class="w-6 h-6 rounded-full bg-current opacity-20" aria-hidden="true"></span>
+							<span class="nav-icon w-6 h-6 rounded-full bg-current opacity-20 transition-all duration-fast" aria-hidden="true"></span>
 						{/if}
 						{#if item.badge}
 							<span
-								class="absolute -top-1 -right-2 min-w-[16px] h-4 px-1 text-[10px] font-bold text-white bg-destructive rounded-full flex items-center justify-center"
+								class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1.5 text-[10px] font-bold text-destructive-foreground bg-destructive rounded-full flex items-center justify-center shadow-sm"
 								aria-label="{item.badge} notifications"
 							>
 								{typeof item.badge === 'number' && item.badge > 99 ? '99+' : item.badge}
 							</span>
 						{/if}
 					</span>
-					<span class="text-2xs font-medium uppercase tracking-wider">{item.label}</span>
-					{#if isActive}
-						<span class={activeIndicatorClass} aria-hidden="true"></span>
-					{/if}
+					<span class="text-label-xs uppercase tracking-wider mt-0.5">{item.label}</span>
 				</a>
 			{/each}
 		{/if}
@@ -251,3 +267,25 @@
 
 <!-- Spacer to prevent content overlap -->
 <div class="h-16 pb-safe" aria-hidden="true"></div>
+
+<style>
+	/* Spring animation for overflow panel */
+	@keyframes slideInUp {
+		from {
+			opacity: 0;
+			transform: translateY(100%);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* Respect reduced motion preference */
+	@media (prefers-reduced-motion: reduce) {
+		@keyframes slideInUp {
+			from { opacity: 0; }
+			to { opacity: 1; }
+		}
+	}
+</style>
