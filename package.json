@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "test": "playwright test"
+    "test": "playwright test",
+    "analyze": "ANALYZE=true vite build"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
@@ -24,6 +25,7 @@
     "jsdom": "^27.4.0",
     "msw": "^2.12.7",
     "postcss": "^8.4.0",
+    "rollup-plugin-visualizer": "^6.0.5",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
     "tailwindcss": "^3.4.0",

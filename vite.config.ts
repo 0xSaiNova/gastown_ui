@@ -1,9 +1,20 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
-	plugins: [sveltekit()],
+	plugins: [
+		sveltekit(),
+		// Bundle analyzer - run with: ANALYZE=true bun run build
+		process.env.ANALYZE === 'true' &&
+			visualizer({
+				filename: 'bundle-stats.html',
+				open: true,
+				gzipSize: true,
+				brotliSize: true
+			})
+	].filter(Boolean),
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}'],
 		globals: true,
