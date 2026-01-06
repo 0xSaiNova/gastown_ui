@@ -1,47 +1,50 @@
-<script context="module" lang="ts">
+<script lang="ts" module>
 	import { tv, type VariantProps } from 'tailwind-variants';
 
 	/**
 	 * AgentCard variant definitions using tailwind-variants
-	 * Enhanced for mobile with rich interactions and expandable details
+	 * Dark industrial aesthetic for Gas Town
 	 */
 	export const agentCardVariants = tv({
 		slots: {
-			card: 'panel-glass transition-all duration-200 hover:shadow-lg hover:border-accent/50 overflow-hidden',
-			hero: 'flex items-center justify-center p-4 bg-gradient-to-br',
-			heroIcon: 'w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-md',
+			card: [
+				'relative bg-gas-surface border border-gas-border rounded-lg overflow-hidden',
+				'transition-all duration-200',
+				'hover:border-gas-primary'
+			],
 			content: 'p-4 space-y-3',
-			header: 'flex items-center justify-between gap-3',
-			badge: 'px-2 py-0.5 rounded-full text-xs font-medium uppercase tracking-wide',
+			header: 'flex items-start justify-between gap-3',
+			name: 'font-display font-semibold text-foreground truncate',
+			badge: [
+				'absolute top-3 right-3',
+				'px-2 py-0.5 rounded text-xs font-medium uppercase tracking-wide'
+			],
+			metaGrid: 'grid grid-cols-2 gap-3',
+			metaItem: 'space-y-1',
+			metaLabel: 'text-xs text-muted-foreground uppercase tracking-wide',
+			metaValue: 'font-mono text-sm text-foreground',
 			details: 'overflow-hidden transition-all duration-300 ease-out',
-			actions: 'flex gap-2 pt-3 border-t border-border/50',
-			actionBtn: 'flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 active:scale-95 min-h-[44px]'
+			actions: 'flex gap-2 pt-3 border-t border-gas-border',
+			actionBtn: [
+				'flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded text-sm font-medium',
+				'bg-gas-border/50 hover:bg-gas-primary hover:text-foreground',
+				'transition-all duration-200 active:scale-95 min-h-[44px]'
+			]
 		},
 		variants: {
 			status: {
 				running: {
-					card: 'border-status-online/30',
-					hero: 'from-status-online/10 to-status-online/5',
-					heroIcon: 'bg-status-online/20 text-status-online',
-					badge: 'bg-status-online/15 text-status-online'
+					badge: 'bg-status-online/20 text-status-online'
 				},
 				idle: {
-					card: 'border-status-idle/30',
-					hero: 'from-status-idle/10 to-status-idle/5',
-					heroIcon: 'bg-status-idle/20 text-status-idle',
-					badge: 'bg-status-idle/15 text-status-idle'
+					badge: 'bg-status-idle/20 text-status-idle'
 				},
 				error: {
-					card: 'border-status-offline/50 shadow-[0_0_20px_-5px_hsl(var(--status-offline)/0.3)] animate-shake',
-					hero: 'from-status-offline/15 to-status-offline/5',
-					heroIcon: 'bg-status-offline/25 text-status-offline animate-pulse',
-					badge: 'bg-status-offline/20 text-status-offline animate-pulse'
+					card: 'border-gas-error [filter:sepia(0.1)]',
+					badge: 'bg-gas-error/20 text-gas-error animate-pulse'
 				},
 				complete: {
-					card: 'border-status-online/30',
-					hero: 'from-status-online/10 to-status-online/5',
-					heroIcon: 'bg-status-online/20 text-status-online',
-					badge: 'bg-status-online/15 text-status-online'
+					badge: 'bg-status-online/20 text-status-online'
 				}
 			},
 			expanded: {
@@ -49,7 +52,7 @@
 				false: { details: 'max-h-0 opacity-0' }
 			},
 			compact: {
-				true: { hero: 'hidden', content: 'p-3' },
+				true: { content: 'p-3' },
 				false: {}
 			}
 		},
@@ -69,7 +72,6 @@
 		meta?: string;
 		progress?: number;
 		class?: string;
-		// Mobile-rich props
 		icon?: string;
 		uptime?: string;
 		errorMessage?: string;
@@ -92,8 +94,6 @@
 		meta = '',
 		progress = 0,
 		class: className = '',
-		// Mobile-rich props
-		icon = '',
 		uptime = '',
 		errorMessage = '',
 		expandable = false,
@@ -132,17 +132,6 @@
 		complete: 'Complete'
 	} as const;
 
-	// Default icons by status
-	const defaultIcons = {
-		running: '⚡',
-		idle: '💤',
-		error: '⚠️',
-		complete: '✅'
-	} as const;
-
-	// Get display icon
-	const displayIcon = $derived(icon || defaultIcons[status ?? 'idle']);
-
 	// Toggle expanded state
 	function toggleExpanded() {
 		if (expandable) {
@@ -167,72 +156,59 @@
 	onclick={expandable ? toggleExpanded : undefined}
 	onkeydown={expandable ? handleKeyDown : undefined}
 >
-	<!-- Hero Section with Icon -->
-	{#if !compact}
-		<div class={styles.hero()}>
-			<div class={styles.heroIcon()}>
-				{displayIcon}
-			</div>
-		</div>
-	{/if}
+	<!-- Status Badge (positioned top-right) -->
+	<span class={styles.badge()}>
+		{statusLabels[status ?? 'idle']}
+	</span>
 
 	<div class={styles.content()}>
-		<!-- Header: Name + Status Badge -->
+		<!-- Header: Name + Status Indicator -->
 		<header class={styles.header()}>
-			<div class="flex items-center gap-2 min-w-0">
-				<StatusIndicator status={statusIndicatorMap[status ?? 'idle']} size="md" />
-				<h3 class="font-medium text-foreground truncate">{name}</h3>
+			<div class="flex items-center gap-2 min-w-0 pr-16">
+				<StatusIndicator status={statusIndicatorMap[status ?? 'idle']} size="sm" />
+				<h3 class={styles.name()}>{name}</h3>
 			</div>
-			<div class="flex items-center gap-2 flex-shrink-0">
-				<span class={styles.badge()}>
-					{statusLabels[status ?? 'idle']}
-				</span>
-				{#if expandable}
-					<svg
-						class="w-4 h-4 text-muted-foreground transition-transform duration-200"
-						class:rotate-180={isExpanded}
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						aria-hidden="true"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-					</svg>
-				{/if}
-			</div>
+			{#if expandable}
+				<svg
+					class="w-4 h-4 text-muted-foreground transition-transform duration-200 flex-shrink-0"
+					class:rotate-180={isExpanded}
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+					aria-hidden="true"
+				>
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+				</svg>
+			{/if}
 		</header>
 
-		<!-- Body: Task + Metadata -->
-		{#if task || meta || uptime}
-			<div class="space-y-2">
-				{#if task}
-					<p class="text-sm text-foreground/80 line-clamp-2">{task}</p>
+		<!-- Task Description -->
+		{#if task}
+			<p class="text-sm text-muted-foreground line-clamp-2">{task}</p>
+		{/if}
+
+		<!-- Metadata Grid -->
+		{#if meta || uptime}
+			<div class={styles.metaGrid()}>
+				{#if meta}
+					<div class={styles.metaItem()}>
+						<span class={styles.metaLabel()}>Task</span>
+						<span class={styles.metaValue()}>{meta}</span>
+					</div>
 				{/if}
-				<div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-					{#if meta}
-						<span class="flex items-center gap-1">
-							<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-							</svg>
-							{meta}
-						</span>
-					{/if}
-					{#if uptime}
-						<span class="flex items-center gap-1">
-							<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							{uptime}
-						</span>
-					{/if}
-				</div>
+				{#if uptime}
+					<div class={styles.metaItem()}>
+						<span class={styles.metaLabel()}>Uptime</span>
+						<span class={styles.metaValue()}>{uptime}</span>
+					</div>
+				{/if}
 			</div>
 		{/if}
 
-		<!-- Error Message (prominent for error state) -->
+		<!-- Error Message -->
 		{#if status === 'error' && errorMessage}
-			<div class="p-3 rounded-lg bg-status-offline/10 border border-status-offline/20">
-				<p class="text-sm text-status-offline font-medium flex items-start gap-2">
+			<div class="p-3 rounded bg-gas-error/10 border border-gas-error/30">
+				<p class="text-sm text-gas-error font-medium flex items-start gap-2">
 					<svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
 					</svg>
@@ -262,11 +238,13 @@
 							{#if onInspect}
 								<button
 									type="button"
-									class={cn(styles.actionBtn(), 'bg-secondary hover:bg-secondary/80 text-secondary-foreground')}
+									class={styles.actionBtn()}
 									onclick={(e) => { e.stopPropagation(); onInspect?.(); }}
 								>
-									<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+									<!-- Lucide Search icon -->
+									<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+										<circle cx="11" cy="11" r="8" />
+										<path d="m21 21-4.3-4.3" />
 									</svg>
 									Inspect
 								</button>
@@ -276,14 +254,16 @@
 									type="button"
 									class={cn(
 										styles.actionBtn(),
-										status === 'error'
-											? 'bg-status-offline/15 hover:bg-status-offline/25 text-status-offline'
-											: 'bg-primary/10 hover:bg-primary/20 text-primary'
+										status === 'error' && 'bg-gas-error/20 hover:bg-gas-error/30 text-gas-error'
 									)}
 									onclick={(e) => { e.stopPropagation(); onReboot?.(); }}
 								>
-									<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+									<!-- Lucide RefreshCw icon -->
+									<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+										<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+										<path d="M21 3v5h-5" />
+										<path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+										<path d="M3 21v-5h5" />
 									</svg>
 									Reboot
 								</button>
@@ -311,7 +291,7 @@
 
 	<!-- Custom content slot -->
 	{#if $$slots.default}
-		<div class="px-4 pb-4 pt-2 border-t border-border/50">
+		<div class="px-4 pb-4 pt-2 border-t border-gas-border">
 			<slot />
 		</div>
 	{/if}

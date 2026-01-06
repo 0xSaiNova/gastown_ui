@@ -74,12 +74,21 @@ export default {
 				info: {
 					DEFAULT: 'hsl(var(--info) / <alpha-value>)',
 					foreground: 'hsl(var(--info-foreground) / <alpha-value>)'
+				},
+
+				// Gas Town Industrial colors (dark theme)
+				gas: {
+					surface: 'hsl(var(--gas-surface) / <alpha-value>)',
+					border: 'hsl(var(--gas-border) / <alpha-value>)',
+					primary: 'hsl(var(--gas-primary) / <alpha-value>)',
+					error: 'hsl(var(--gas-error) / <alpha-value>)'
 				}
 			},
 
 			fontFamily: {
 				sans: ['Inter', 'system-ui', '-apple-system', ...fontFamily.sans],
-				mono: ['JetBrains Mono', 'SF Mono', 'Fira Code', ...fontFamily.mono]
+				mono: ['JetBrains Mono', 'SF Mono', 'Fira Code', ...fontFamily.mono],
+				display: ['Inter', 'system-ui', '-apple-system', ...fontFamily.sans]
 			},
 
 			fontSize: {
