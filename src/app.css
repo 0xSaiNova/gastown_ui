@@ -157,6 +157,12 @@
 		--input: 169 24% 13%;              /* gas-surfaceHighlight: #1A2A27 */
 		--ring: 18 86% 56%;                /* gas-primary: #EF6F2E */
 
+		/* === Gas Town Industrial Tokens === */
+		--gas-surface: 0 0% 8%;
+		--gas-border: 0 0% 20%;
+		--gas-primary: 18 86% 58%;
+		--gas-error: 0 72% 45%;
+
 		--success: 160 84% 39%;
 		--success-foreground: 0 0% 100%;
 		--warning: 38 92% 50%;
