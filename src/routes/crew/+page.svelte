@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { GridPattern, StatusIndicator } from '$lib/components';
 	import { cn } from '$lib/utils';
+	import { Plus, Users } from 'lucide-svelte';
 
 	const { data, form } = $props();
 
@@ -105,12 +106,12 @@
 			<!-- Add Crew Section -->
 			<section class="panel-glass p-6">
 				<div class="flex items-center justify-between mb-4">
-					<div class="flex items-center gap-3">
-						<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-							<span class="text-xl">+</span>
-						</div>
-						<div>
-							<h2 class="text-lg font-semibold text-foreground">Add Crew</h2>
+				<div class="flex items-center gap-3">
+					<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+						<Plus class="w-5 h-5 text-primary" strokeWidth={2} />
+					</div>
+					<div>
+						<h2 class="text-lg font-semibold text-foreground">Add Crew</h2>
 							<p class="text-sm text-muted-foreground">Create a new persistent workspace</p>
 						</div>
 					</div>
@@ -188,7 +189,7 @@
 			<section class="panel-glass p-6">
 				<div class="flex items-center gap-3 mb-4">
 					<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-						<span class="text-xl">&#128119;</span>
+						<Users class="w-5 h-5 text-primary" strokeWidth={2} />
 					</div>
 					<div>
 						<h2 class="text-lg font-semibold text-foreground">Active Crew</h2>
