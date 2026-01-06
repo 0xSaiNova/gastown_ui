@@ -32,7 +32,7 @@
 	]);
 </script>
 
-<DashboardLayout title={townName} {systemStatus}>
+<DashboardLayout title={townName?.toLowerCase?.() ?? 'gastown'} {systemStatus}>
 	<!-- Left Column: Agents -->
 	{#snippet agents()}
 		{#if error}
