@@ -128,49 +128,49 @@ function generateMockStats(timeRange: string, rig: string | null): StatsData {
 	const nextScheduled = new Date(now.getTime() + 42 * 60 * 1000);
 	const verificationChecks: StatsData['performanceVerification']['checks'] = [
 		{
-			id: 'p95-latency',
-			name: 'P95 API latency',
-			target: '< 300ms',
-			current: '248ms',
+			id: 'frame-time',
+			name: 'Frame time',
+			target: '<= 16.7ms',
+			current: '14.2ms',
 			status: 'pass',
-			confidence: 92,
-			note: 'steady'
+			confidence: 94,
+			note: 'steady 60fps'
 		},
 		{
-			id: 'error-rate',
-			name: 'Error budget burn',
-			target: '< 1%',
-			current: '0.3%',
+			id: 'interaction-feedback',
+			name: 'Interaction feedback',
+			target: '<= 100ms',
+			current: '82ms',
 			status: 'pass',
-			confidence: 95,
-			note: 'stable'
+			confidence: 88,
+			note: 'responsive'
 		},
 		{
-			id: 'queue-lag',
-			name: 'Queue lag',
-			target: '< 2m',
-			current: '2.4m',
+			id: 'animation-duration',
+			name: 'Animation duration',
+			target: '<= 500ms',
+			current: '420ms',
+			status: 'pass',
+			confidence: 86,
+			note: 'within budget'
+		},
+		{
+			id: 'long-tasks',
+			name: 'Long tasks',
+			target: '0 > 50ms',
+			current: '1 spike',
 			status: 'warn',
-			confidence: 68,
-			note: 'backlog spike'
+			confidence: 64,
+			note: 'list render'
 		},
 		{
-			id: 'throughput',
-			name: 'Throughput',
-			target: '> 120 msg/min',
-			current: '138 msg/min',
+			id: 'layout-shift',
+			name: 'Layout shifts',
+			target: '<= 0.1 CLS',
+			current: '0.06 CLS',
 			status: 'pass',
-			confidence: 87,
-			note: 'above target'
-		},
-		{
-			id: 'worker-saturation',
-			name: 'Worker saturation',
-			target: '< 75%',
-			current: '81%',
-			status: 'warn',
-			confidence: 62,
-			note: 'hot pool'
+			confidence: 90,
+			note: 'stable nav'
 		}
 	];
 	const performanceStatus = verificationChecks.some((check) => check.status === 'fail')
