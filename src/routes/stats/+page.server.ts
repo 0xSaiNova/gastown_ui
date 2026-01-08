@@ -67,6 +67,21 @@ export interface StatsData {
 		fastestConvoys: ConvoyStats[];
 		topIssueClosers: IssueCloser[];
 	};
+	performanceVerification: {
+		status: 'verified' | 'warning' | 'failed';
+		score: number; // percentage
+		lastVerified: string;
+		nextScheduled: string;
+		checks: Array<{
+			id: string;
+			name: string;
+			target: string;
+			current: string;
+			status: 'pass' | 'warn' | 'fail';
+			confidence: number; // percentage
+			note?: string;
+		}>;
+	};
 	filters: {
 		rigs: string[];
 		timeRange: string;
@@ -108,6 +123,64 @@ function generateMockStats(timeRange: string, rig: string | null): StatsData {
 
 	const completedIssues = Math.floor(45 * multiplier / 7);
 	const openIssues = Math.floor(Math.random() * 20) + 10;
+	const now = new Date();
+	const lastVerified = new Date(now.getTime() - 18 * 60 * 1000);
+	const nextScheduled = new Date(now.getTime() + 42 * 60 * 1000);
+	const verificationChecks: StatsData['performanceVerification']['checks'] = [
+		{
+			id: 'p95-latency',
+			name: 'P95 API latency',
+			target: '< 300ms',
+			current: '248ms',
+			status: 'pass',
+			confidence: 92,
+			note: 'steady'
+		},
+		{
+			id: 'error-rate',
+			name: 'Error budget burn',
+			target: '< 1%',
+			current: '0.3%',
+			status: 'pass',
+			confidence: 95,
+			note: 'stable'
+		},
+		{
+			id: 'queue-lag',
+			name: 'Queue lag',
+			target: '< 2m',
+			current: '2.4m',
+			status: 'warn',
+			confidence: 68,
+			note: 'backlog spike'
+		},
+		{
+			id: 'throughput',
+			name: 'Throughput',
+			target: '> 120 msg/min',
+			current: '138 msg/min',
+			status: 'pass',
+			confidence: 87,
+			note: 'above target'
+		},
+		{
+			id: 'worker-saturation',
+			name: 'Worker saturation',
+			target: '< 75%',
+			current: '81%',
+			status: 'warn',
+			confidence: 62,
+			note: 'hot pool'
+		}
+	];
+	const performanceStatus = verificationChecks.some((check) => check.status === 'fail')
+		? 'failed'
+		: verificationChecks.some((check) => check.status === 'warn')
+			? 'warning'
+			: 'verified';
+	const performanceScore = Math.round(
+		verificationChecks.reduce((acc, check) => acc + check.confidence, 0) / verificationChecks.length
+	);
 
 	return {
 		summary: {
@@ -160,6 +233,13 @@ function generateMockStats(timeRange: string, rig: string | null): StatsData {
 				{ name: 'Deacon', closed: 28, avgTimeToClose: 1.5 },
 				{ name: 'Witness', closed: 15, avgTimeToClose: 0.8 }
 			]
+		},
+		performanceVerification: {
+			status: performanceStatus,
+			score: performanceScore,
+			lastVerified: lastVerified.toISOString(),
+			nextScheduled: nextScheduled.toISOString(),
+			checks: verificationChecks
 		},
 		filters: {
 			rigs: ['gastown_ui', 'api_server', 'data_pipeline'],

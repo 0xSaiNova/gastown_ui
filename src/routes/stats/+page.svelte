@@ -52,6 +52,35 @@
 		if (rate < 5) return 'text-status-pending';
 		return 'text-status-offline';
 	}
+
+	type VerificationStatus = 'pass' | 'warn' | 'fail';
+	type VerificationOverallStatus = 'verified' | 'warning' | 'failed';
+
+	function getVerificationIndicator(status: VerificationStatus): 'complete' | 'warning' | 'error' {
+		if (status === 'pass') return 'complete';
+		if (status === 'warn') return 'warning';
+		return 'error';
+	}
+
+	function getVerificationTone(status: VerificationStatus): string {
+		if (status === 'pass') return 'text-status-online';
+		if (status === 'warn') return 'text-status-pending';
+		return 'text-status-offline';
+	}
+
+	function getVerificationOverall(status: VerificationOverallStatus): {
+		label: string;
+		indicator: 'complete' | 'warning' | 'error';
+	} {
+		switch (status) {
+			case 'verified':
+				return { label: 'Verified', indicator: 'complete' };
+			case 'warning':
+				return { label: 'Needs Attention', indicator: 'warning' };
+			case 'failed':
+				return { label: 'Failed', indicator: 'error' };
+		}
+	}
 </script>
 
 <div class="relative min-h-screen bg-background">
@@ -211,6 +240,90 @@
 									class="h-full rounded-full {data.stats.health.errorRate < 1 ? 'bg-status-online' : data.stats.health.errorRate < 5 ? 'bg-status-pending' : 'bg-status-offline'} transition-all duration-500"
 									style="width: {Math.min(data.stats.health.errorRate * 10, 100)}%"
 								></div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- Performance Verification -->
+				<section>
+					<div class="flex items-center justify-between mb-3">
+						<h2 class="text-lg font-semibold">Performance Verification</h2>
+						<p class="text-xs text-muted-foreground">
+							Last run {new Date(data.stats.performanceVerification.lastVerified).toLocaleTimeString()}
+						</p>
+					</div>
+					<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+						<div class="panel-glass p-4 animate-blur-fade-up">
+							<div class="flex items-center justify-between">
+								<p class="text-sm text-muted-foreground">Verification Status</p>
+								<StatusIndicator
+									status={getVerificationOverall(data.stats.performanceVerification.status).indicator}
+									size="lg"
+								/>
+							</div>
+							<p class="text-2xl font-semibold mt-2">
+								{getVerificationOverall(data.stats.performanceVerification.status).label}
+							</p>
+							<div class="mt-3">
+								<div class="flex items-center justify-between text-xs text-muted-foreground">
+									<span>Confidence score</span>
+									<span>{data.stats.performanceVerification.score}%</span>
+								</div>
+								<div class="mt-2 h-2 rounded-full bg-muted overflow-hidden">
+									<div
+										class="h-full rounded-full bg-status-online transition-all duration-500"
+										style="width: {data.stats.performanceVerification.score}%"
+									></div>
+								</div>
+							</div>
+							<div class="mt-4 text-xs text-muted-foreground flex items-center justify-between">
+								<span>Next check</span>
+								<span>{new Date(data.stats.performanceVerification.nextScheduled).toLocaleTimeString()}</span>
+							</div>
+						</div>
+
+						<div class="panel-glass p-4 lg:col-span-2 animate-blur-fade-up">
+							<div class="flex items-center justify-between mb-3">
+								<h3 class="text-sm font-medium">Verification Checks</h3>
+								<span class="text-xs text-muted-foreground">
+									{data.stats.performanceVerification.checks.length} checks
+								</span>
+							</div>
+							<div class="space-y-4">
+								{#each data.stats.performanceVerification.checks as check}
+									<div class="space-y-2">
+										<div class="flex items-center justify-between">
+											<div class="flex items-center gap-3">
+												<StatusIndicator status={getVerificationIndicator(check.status)} />
+												<div>
+													<p class="text-sm font-medium">{check.name}</p>
+													<p class="text-xs text-muted-foreground">
+														Target {check.target}
+													</p>
+												</div>
+											</div>
+											<div class="text-right">
+												<p class="text-sm font-semibold {getVerificationTone(check.status)}">
+													{check.current}
+												</p>
+												{#if check.note}
+													<p class="text-xs text-muted-foreground">{check.note}</p>
+												{/if}
+											</div>
+										</div>
+										<div class="h-2 rounded-full bg-muted overflow-hidden">
+											<div
+												class="h-full rounded-full transition-all duration-500 {check.status === 'pass'
+													? 'bg-status-online'
+													: check.status === 'warn'
+														? 'bg-status-pending'
+														: 'bg-status-offline'}"
+												style="width: {check.confidence}%"
+											></div>
+										</div>
+									</div>
+								{/each}
 							</div>
 						</div>
 					</div>
