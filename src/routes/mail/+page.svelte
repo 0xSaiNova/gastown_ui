@@ -1,16 +1,63 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
+	import { onMount } from 'svelte';
 	import { tv } from 'tailwind-variants';
 	import { GridPattern, PullToRefresh } from '$lib/components';
 	import { cn } from '$lib/utils';
-	import type { PageData } from './$types';
-	import { Plus, ChevronDown, ChevronRight } from 'lucide-svelte';
+	import { Plus, ChevronDown, ChevronRight, Loader2 } from 'lucide-svelte';
 
-	let { data }: { data: PageData } = $props();
+	interface MailMessage {
+		id: string;
+		from: string;
+		subject: string;
+		body: string;
+		timestamp: string;
+		read: boolean;
+		priority: string;
+		messageType: string;
+		threadId: string;
+	}
+
+	interface MailData {
+		messages: MailMessage[];
+		unreadCount: number;
+		error: string | null;
+		fetchedAt: string;
+	}
+
+	// Client-side state
+	let data = $state<MailData>({
+		messages: [],
+		unreadCount: 0,
+		error: null,
+		fetchedAt: ''
+	});
+	let loading = $state(true);
+
+	async function fetchMail() {
+		try {
+			const res = await fetch('/api/gastown/mail');
+			if (!res.ok) throw new Error('Failed to fetch mail');
+			data = await res.json();
+		} catch (e) {
+			data = {
+				messages: [],
+				unreadCount: 0,
+				error: e instanceof Error ? e.message : 'Failed to fetch mail',
+				fetchedAt: new Date().toISOString()
+			};
+		} finally {
+			loading = false;
+		}
+	}
 
 	async function refresh() {
-		await invalidateAll();
+		loading = true;
+		await fetchMail();
 	}
+
+	onMount(() => {
+		fetchMail();
+	});
 
 	// Track which message is expanded
 	let expandedId = $state<string | null>(null);
@@ -118,7 +165,12 @@
 
 		<PullToRefresh onRefresh={refresh} class="flex-1">
 		<main class="container py-6" data-scrollable>
-			{#if data.error}
+			{#if loading}
+				<div class="panel-glass p-6 flex items-center justify-center gap-3">
+					<Loader2 class="w-5 h-5 animate-spin text-accent" />
+					<span class="text-muted-foreground">Loading mail...</span>
+				</div>
+			{:else if data.error}
 				<div class="panel-glass p-6 border-status-offline/30">
 					<p class="text-status-offline font-medium">Failed to load inbox</p>
 					<p class="text-sm text-muted-foreground mt-1">{data.error}</p>
