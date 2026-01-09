@@ -259,7 +259,7 @@
 
 		<main class="container py-6">
 			<!-- Create Issue Section -->
-			<section class="panel-glass p-6 mx-auto mb-6 max-w-2xl">
+			<section class="panel-glass p-6 mx-auto mb-8 max-w-lg">
 				<h2 class="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
 					<PenLine class="w-5 h-5 text-foreground" strokeWidth={2} />
 					Create Issue
@@ -269,7 +269,8 @@
 					<div>
 						<label for="issue-title" class="block text-sm font-medium text-foreground mb-2">
 							<span>Title</span>
-							<span class="text-destructive">*</span>
+							<span class="text-destructive font-semibold">*</span>
+							<span class="text-xs text-muted-foreground ml-1">(required)</span>
 						</label>
 						<input
 							id="issue-title"
@@ -296,19 +297,19 @@
 						/>
 					</div>
 
-					<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-						<div>
-							<label for="issue-priority" class="block text-sm font-medium text-foreground mb-2">
-								<span>Priority</span>
-								<span class="text-destructive">*</span>
-							</label>
-							<div class="relative">
-								<select
-									id="issue-priority"
-									bind:value={issuePriority}
-									class="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg
-										   text-foreground focus:outline-none focus:ring-2 focus:ring-ring
-										   appearance-none pr-10"
+					<div>
+						<label for="issue-priority" class="block text-sm font-medium text-foreground mb-2">
+							<span>Priority</span>
+							<span class="text-destructive font-semibold">*</span>
+							<span class="text-xs text-muted-foreground ml-1">(required)</span>
+						</label>
+						<div class="relative">
+							<select
+								id="issue-priority"
+								bind:value={issuePriority}
+								class="w-full px-3 py-2 bg-input border border-border rounded-lg
+									   text-foreground focus:outline-none focus:ring-2 focus:ring-ring
+									   appearance-none pr-10"
 								>
 									{#each priorities as p}
 										<option value={p.value}>{p.label}</option>
@@ -316,7 +317,6 @@
 								</select>
 								<ChevronDown class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" strokeWidth={2} />
 							</div>
-						</div>
 					</div>
 
 					{#if issueMessage}
@@ -342,17 +342,18 @@
 			</section>
 
 			<!-- Create Convoy Section -->
-			<section class="panel-glass p-6 mx-auto mb-6 max-w-2xl">
+			<section class="panel-glass p-6 mx-auto mb-8 max-w-lg">
 				<h2 class="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
 					<Truck class="w-5 h-5 text-foreground" strokeWidth={2} />
 					Create Convoy
 				</h2>
 
-				<form onsubmit={handleCreateConvoy} class="space-y-3">
+				<form onsubmit={handleCreateConvoy} class="space-y-4">
 					<div>
 						<label for="convoy-name" class="block text-sm font-medium text-foreground mb-2">
 							<span>Convoy Name</span>
-							<span class="text-destructive">*</span>
+							<span class="text-destructive font-semibold">*</span>
+							<span class="text-xs text-muted-foreground ml-1">(required)</span>
 						</label>
 						<input
 							id="convoy-name"
@@ -373,7 +374,8 @@
 					<div>
 						<span class="block text-sm font-medium text-foreground mb-2">
 							Select Issues ({selectedIssues.length} selected)
-							<span class="text-destructive">*</span>
+							<span class="text-destructive font-semibold">*</span>
+							<span class="text-xs text-muted-foreground ml-1">(required)</span>
 						</span>
 						{#if localIssues.length === 0}
 							<p class="text-sm text-muted-foreground">No open issues available</p>
@@ -428,24 +430,25 @@
 			</section>
 
 			<!-- Sling Work Section -->
-			<section class="panel-glass p-6 mx-auto mb-6 max-w-2xl">
+			<section class="panel-glass p-6 mx-auto mb-8 max-w-lg">
 				<h2 class="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
 					<Target class="w-5 h-5 text-foreground" strokeWidth={2} />
 					Sling Work
 				</h2>
 
-				<form onsubmit={handleSling} class="space-y-3">
+				<form onsubmit={handleSling} class="space-y-4">
 					<div>
 						<label for="sling-issue" class="block text-sm font-medium text-foreground mb-2">
 							<span>Issue</span>
-							<span class="text-destructive">*</span>
+							<span class="text-destructive font-semibold">*</span>
+							<span class="text-xs text-muted-foreground ml-1">(required)</span>
 						</label>
 						<div class="relative">
 							<select
 								id="sling-issue"
 								bind:value={slingIssue}
 								required
-								class="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg
+								class="w-full px-3 py-2 bg-input border border-border rounded-lg
 									   text-foreground focus:outline-none focus:ring-2 focus:ring-ring
 									   appearance-none pr-10
 									   {slingErrors.issue ? 'border-destructive' : ''}"
@@ -467,14 +470,15 @@
 					<div>
 						<label for="sling-rig" class="block text-sm font-medium text-foreground mb-2">
 							<span>Target Rig</span>
-							<span class="text-destructive">*</span>
+							<span class="text-destructive font-semibold">*</span>
+							<span class="text-xs text-muted-foreground ml-1">(required)</span>
 						</label>
 						<div class="relative">
 							<select
 								id="sling-rig"
 								bind:value={slingRig}
 								required
-								class="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg
+								class="w-full px-3 py-2 bg-input border border-border rounded-lg
 									   text-foreground focus:outline-none focus:ring-2 focus:ring-ring
 									   appearance-none pr-10
 									   {slingErrors.rig ? 'border-destructive' : ''}"
@@ -514,7 +518,7 @@
 			</section>
 
 			<!-- Current Issues List -->
-			<section class="panel-glass p-6 mx-auto mb-6 max-w-2xl">
+			<section class="panel-glass p-6 mx-auto mb-8 max-w-lg">
 				<h2 class="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
 					<ClipboardList class="w-5 h-5 text-foreground" strokeWidth={2} />
 					Open Issues ({localIssues.length})
