@@ -91,3 +91,23 @@ build/
 # =============================================================================
 .claude/
 bundle-stats.html
+
+# =============================================================================
+# Temporary session & handoff docs (cleaned up 2026-01-19)
+# =============================================================================
+HANDOFF.md
+SESSION_HANDOFF.md
+START_HERE.md
+START_FIXES.md
+SPRINT_STATUS.md
+CRITICAL_FIXES_COMPLETE.md
+EXECUTION_READY.md
+LAUNCH.md
+INDEX.md
+MERGE_CHECKLIST.md
+REVIEW_INDEX.md
+README_RALPH.md
+prompt-fixes.md
+IMPROVEMENT.md
+prd-fixes.json
+ralph_execution.log
