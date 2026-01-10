@@ -75,7 +75,7 @@ interface WebSocketConfig {
 }
 
 const DEFAULT_CONFIG: WebSocketConfig = {
-	url: 'ws://localhost:8080/ws',
+	url: import.meta.env.VITE_WS_URL || 'ws://localhost:8080/ws',
 	reconnectBaseDelay: 1000,
 	reconnectMaxDelay: 30000,
 	heartbeatInterval: 30000,
