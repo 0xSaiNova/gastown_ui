@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn, formatTimestamp, formatRelativeTime } from '$lib/utils';
 	import { GridPattern } from '$lib/components';
 	import type { PageData } from './$types';
 
@@ -40,32 +40,6 @@
 			icon: '-'
 		}
 	};
-
-	function formatTimestamp(isoString: string): string {
-		const date = new Date(isoString);
-		return date.toLocaleDateString('en-US', {
-			weekday: 'short',
-			month: 'short',
-			day: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
-	}
-
-	function formatRelativeTime(isoString: string): string {
-		const date = new Date(isoString);
-		const now = new Date();
-		const diffMs = now.getTime() - date.getTime();
-		const diffMins = Math.floor(diffMs / 60000);
-		const diffHours = Math.floor(diffMins / 60);
-		const diffDays = Math.floor(diffHours / 24);
-
-		if (diffMins < 1) return 'just now';
-		if (diffMins < 60) return `${diffMins}m ago`;
-		if (diffHours < 24) return `${diffHours}h ago`;
-		if (diffDays < 7) return `${diffDays}d ago`;
-		return formatTimestamp(isoString);
-	}
 
 	// Derived values for escalation and config
 	const escalation = $derived(data.escalation);

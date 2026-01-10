@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn, formatRelativeTime } from '$lib/utils';
 	import { GridPattern } from '$lib/components';
 	import type { PageData } from './$types';
 
@@ -40,27 +40,6 @@
 			icon: '-'
 		}
 	};
-
-	function formatTimestamp(isoString: string): string {
-		const date = new Date(isoString);
-		const now = new Date();
-		const diffMs = now.getTime() - date.getTime();
-		const diffMins = Math.floor(diffMs / 60000);
-		const diffHours = Math.floor(diffMins / 60);
-		const diffDays = Math.floor(diffHours / 24);
-
-		if (diffMins < 1) return 'just now';
-		if (diffMins < 60) return `${diffMins}m ago`;
-		if (diffHours < 24) return `${diffHours}h ago`;
-		if (diffDays < 7) return `${diffDays}d ago`;
-
-		return date.toLocaleDateString('en-US', {
-			month: 'short',
-			day: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
-	}
 
 	function getBeadUrl(id: string): string {
 		return `bd://show/${id}`;
@@ -174,7 +153,7 @@
 
 									<!-- Timestamp and ID -->
 									<div class="text-right text-sm">
-										<p class="text-muted-foreground">{formatTimestamp(escalation.timestamp)}</p>
+										<p class="text-muted-foreground">{formatRelativeTime(escalation.timestamp)}</p>
 										<a
 											href={getBeadUrl(escalation.id)}
 											class="text-xs font-mono text-primary hover:underline"

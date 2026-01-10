@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { GridPattern, ProgressBar, StatusIndicator } from '$lib/components';
+	import { formatDate } from '$lib/utils';
 	import type { ConvoyDetail } from './+page.server';
 
 	const { data } = $props();
@@ -37,18 +38,6 @@
 	};
 
 	const config = $derived(statusConfig[convoy.status]);
-
-	function formatDate(dateStr: string): string {
-		if (!dateStr) return 'Unknown';
-		const date = new Date(dateStr);
-		return date.toLocaleDateString('en-US', {
-			month: 'short',
-			day: 'numeric',
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
-	}
 
 	function getIssueStatusColor(status: string): string {
 		switch (status) {
@@ -147,7 +136,7 @@
 						</div>
 						<div>
 							<dt class="text-muted-foreground">Created</dt>
-							<dd class="text-foreground mt-0.5">{formatDate(convoy.createdAt)}</dd>
+							<dd class="text-foreground mt-0.5">{formatDate(convoy.createdAt, true)}</dd>
 						</div>
 						<div>
 							<dt class="text-muted-foreground">Issues</dt>

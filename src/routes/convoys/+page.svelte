@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { GridPattern, ProgressBar, StatusIndicator, EmptyState } from '$lib/components';
+	import { formatDate } from '$lib/utils';
 	import type { Convoy } from './+page.server';
 	import { ChevronDown } from 'lucide-svelte';
 
@@ -44,16 +45,6 @@
 			borderClass: 'border-status-online/30'
 		}
 	};
-
-	function formatDate(dateStr: string): string {
-		const date = new Date(dateStr);
-		return date.toLocaleDateString('en-US', {
-			month: 'short',
-			day: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
-	}
 
 	function getIssueStatusColor(status: string): string {
 		switch (status) {

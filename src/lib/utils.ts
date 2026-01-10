@@ -13,3 +13,15 @@ import { twMerge } from 'tailwind-merge';
 export function cn(...inputs: ClassValue[]): string {
 	return twMerge(clsx(inputs));
 }
+
+// Re-export date utilities for convenient access
+export {
+	formatRelativeTime,
+	formatTimestamp,
+	formatDate,
+	formatTime,
+	formatFriendlyDate,
+	formatDuration,
+	isToday,
+	isPast
+} from './utils/date';

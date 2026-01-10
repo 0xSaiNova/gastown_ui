@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { GridPattern, StatusIndicator } from '$lib/components';
+	import { formatDate, formatRelativeTime } from '$lib/utils';
 	import type { IssueDetail, IssueStatus, ActivityEvent } from './+page.server';
 
 	const { data } = $props();
@@ -96,33 +97,6 @@
 		return parts[parts.length - 1];
 	}
 
-	function formatDate(dateStr: string): string {
-		if (!dateStr) return 'Unknown';
-		const date = new Date(dateStr);
-		return date.toLocaleDateString('en-US', {
-			month: 'short',
-			day: 'numeric',
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
-	}
-
-	function formatRelativeTime(dateStr: string): string {
-		const date = new Date(dateStr);
-		const now = new Date();
-		const diffMs = now.getTime() - date.getTime();
-		const diffMins = Math.floor(diffMs / 60000);
-		const diffHours = Math.floor(diffMins / 60);
-		const diffDays = Math.floor(diffHours / 24);
-
-		if (diffMins < 1) return 'just now';
-		if (diffMins < 60) return `${diffMins}m ago`;
-		if (diffHours < 24) return `${diffHours}h ago`;
-		if (diffDays < 7) return `${diffDays}d ago`;
-		return formatDate(dateStr);
-	}
-
 	function getIssueStatusBg(status: IssueStatus): string {
 		return statusConfig[status].bgClass;
 	}
@@ -194,11 +168,11 @@
 							</div>
 							<div>
 								<dt class="text-muted-foreground">Created</dt>
-								<dd class="text-foreground mt-0.5">{formatDate(issue.created_at)}</dd>
+								<dd class="text-foreground mt-0.5">{formatDate(issue.created_at, true)}</dd>
 							</div>
 							<div>
 								<dt class="text-muted-foreground">Updated</dt>
-								<dd class="text-foreground mt-0.5">{formatDate(issue.updated_at)}</dd>
+								<dd class="text-foreground mt-0.5">{formatDate(issue.updated_at, true)}</dd>
 							</div>
 							{#if issue.assignee}
 								<div class="col-span-2">
