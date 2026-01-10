@@ -3,8 +3,9 @@
  *
  * Manages theme state across the application with:
  * - Light, dark, and system theme modes
- * - LocalStorage persistence
+ * - LocalStorage persistence (graceful degradation in incognito)
  * - System preference detection
+ * - Screen reader announcements
  */
 
 import { browser } from '$app/environment';
@@ -12,6 +13,41 @@ import { browser } from '$app/environment';
 export type Theme = 'light' | 'dark' | 'system';
 
 const STORAGE_KEY = 'gastown-theme';
+
+/**
+ * Safe localStorage access for incognito mode
+ */
+function safeGetItem(key: string): string | null {
+	try {
+		return localStorage.getItem(key);
+	} catch {
+		return null;
+	}
+}
+
+function safeSetItem(key: string, value: string): void {
+	try {
+		localStorage.setItem(key, value);
+	} catch {
+		// Silently fail in incognito mode
+	}
+}
+
+/**
+ * Announce theme change to screen readers
+ */
+function announceThemeChange(theme: Theme, effectiveTheme: 'light' | 'dark'): void {
+	if (!browser) return;
+
+	const message = theme === 'system'
+		? `Theme set to system preference (${effectiveTheme} mode)`
+		: `Theme changed to ${theme} mode`;
+
+	// Dispatch custom event for Announcer component
+	window.dispatchEvent(new CustomEvent('announce', {
+		detail: { message, priority: 'polite' }
+	}));
+}
 
 class ThemeStore {
 	#theme = $state<Theme>('system');
@@ -40,8 +76,8 @@ class ThemeStore {
 	}
 
 	#initialize() {
-		// Load from localStorage
-		const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
+		// Load from localStorage (graceful degradation for incognito)
+		const stored = safeGetItem(STORAGE_KEY) as Theme | null;
 		this.#theme = stored ?? 'system';
 
 		// Calculate effective theme
@@ -53,6 +89,7 @@ class ThemeStore {
 			if (this.#theme === 'system') {
 				this.#updateEffectiveTheme();
 				this.#applyToDOM();
+				announceThemeChange(this.#theme, this.#effectiveTheme);
 			}
 		});
 
@@ -81,9 +118,10 @@ class ThemeStore {
 	 */
 	set(newTheme: Theme) {
 		this.#theme = newTheme;
-		localStorage.setItem(STORAGE_KEY, newTheme);
+		safeSetItem(STORAGE_KEY, newTheme);
 		this.#updateEffectiveTheme();
 		this.#applyToDOM();
+		announceThemeChange(newTheme, this.#effectiveTheme);
 	}
 
 	/**

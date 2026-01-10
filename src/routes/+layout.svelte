@@ -326,7 +326,7 @@
 			<Sidebar
 				items={navItems}
 				{activeId}
-				class="h-screen"
+				class="h-dvh"
 			/>
 		</div>
 

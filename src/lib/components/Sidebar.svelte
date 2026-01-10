@@ -346,7 +346,7 @@
 	</div>
 
 	<!-- Footer: Theme toggle and Collapse button -->
-	<div class="shrink-0 border-t border-border p-2 space-y-1">
+	<div class="shrink-0 border-t border-border p-2 pb-safe space-y-1">
 		<!-- Theme toggle -->
 		<ThemeToggle {collapsed} class="w-full" />
 
