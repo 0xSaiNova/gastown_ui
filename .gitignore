@@ -126,6 +126,11 @@ DESIGN_CRITIQUE.md
 prompt.md
 .archive/
 
+# Planning/audit docs (session artifacts)
+ACTION_PLAN.md
+CODE_HEALTH_AUDIT.md
+RESPONSIVE_DESIGN_AUDIT.md
+
 # =============================================================================
 # Package managers (use bun only)
 # =============================================================================
