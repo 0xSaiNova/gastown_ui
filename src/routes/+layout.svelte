@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import { SkipLink, Announcer, BottomNav, Sidebar, GlobalSearch, NavigationLoader, KeyboardHelpDialog } from '$lib/components';
+	import { SkipLink, Announcer, BottomNav, Sidebar, NavigationLoader } from '$lib/components';
 	import { initializeKeyboardShortcuts, keyboardManager } from '$lib/utils/keyboard';
 	import { preloadRoute } from '$lib/preload';
 	import { page } from '$app/stores';
@@ -259,7 +259,11 @@
 		<div class="flex-1 flex flex-col min-h-screen">
 			<!-- Global search in header for desktop -->
 			<div class="fixed top-4 right-4 z-40">
-				<GlobalSearch />
+				{#await import('$lib/components/GlobalSearch.svelte') then m}
+					<svelte:component this={m.default} />
+				{:catch}
+					<button class="w-10 h-10 rounded-lg bg-card border border-border" />
+				{/await}
 			</div>
 
 			<main
@@ -291,7 +295,11 @@
 			</button>
 			<span class="text-sm font-semibold text-foreground">Navigation</span>
 			<div class="ml-auto">
-				<GlobalSearch class="rounded-lg" />
+				{#await import('$lib/components/GlobalSearch.svelte') then m}
+					<svelte:component this={m.default} class="rounded-lg" />
+				{:catch}
+					<button class="w-10 h-10 rounded-lg bg-card border border-border" />
+				{/await}
 			</div>
 		</div>
 
@@ -351,8 +359,10 @@
 		</nav>
 		<BottomNav items={navItems} {activeId} />
 		
-		<!-- Keyboard shortcuts help dialog -->
-		<KeyboardHelpDialog />
+		<!-- Keyboard shortcuts help dialog (lazy loaded) -->
+		{#await import('$lib/components/KeyboardHelpDialog.svelte') then m}
+			<svelte:component this={m.default} />
+		{/await}
 		</div>
 {:else}
 	<!-- Login page - no navigation -->
