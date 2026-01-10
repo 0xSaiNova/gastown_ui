@@ -1,53 +1,20 @@
 <script lang="ts">
 	import { GridPattern, StatusIndicator } from '$lib/components';
-	import type { IssueDetail, IssueStatus, ActivityEvent } from './+page.server';
+	import {
+		formatDate,
+		formatRelativeTime,
+		issueStatusConfig,
+		getIssueStatusBg,
+		priorityLabels,
+		formatAgent,
+		type IssueStatus
+	} from '$lib/utils';
+	import type { IssueDetail, ActivityEvent } from './+page.server';
 
 	const { data } = $props();
 	const issue: IssueDetail = $derived(data.issue);
 
-	// Status configuration
-	const statusConfig: Record<IssueStatus, {
-		indicatorStatus: 'running' | 'idle' | 'error' | 'warning' | 'complete';
-		label: string;
-		bgClass: string;
-		borderClass: string;
-	}> = {
-		open: {
-			indicatorStatus: 'warning',
-			label: 'Open',
-			bgClass: 'bg-warning/10 text-warning',
-			borderClass: 'border-warning/30'
-		},
-		in_progress: {
-			indicatorStatus: 'running',
-			label: 'In Progress',
-			bgClass: 'bg-info/10 text-info',
-			borderClass: 'border-info/30'
-		},
-		blocked: {
-			indicatorStatus: 'error',
-			label: 'Blocked',
-			bgClass: 'bg-destructive/10 text-destructive',
-			borderClass: 'border-destructive/30'
-		},
-		completed: {
-			indicatorStatus: 'complete',
-			label: 'Completed',
-			bgClass: 'bg-success/10 text-success',
-			borderClass: 'border-success/30'
-		}
-	};
-
-	const config = $derived(statusConfig[issue.status]);
-
-	// Priority labels
-	const priorityLabels: Record<number, { label: string; class: string }> = {
-		0: { label: 'P0 Critical', class: 'text-destructive bg-destructive/10' },
-		1: { label: 'P1 High', class: 'text-warning bg-warning/10' },
-		2: { label: 'P2 Medium', class: 'text-warning/80 bg-warning/10' },
-		3: { label: 'P3 Low', class: 'text-info bg-info/10' },
-		4: { label: 'P4 Backlog', class: 'text-muted-foreground bg-muted' }
-	};
+	const config = $derived(issueStatusConfig[issue.status as IssueStatus]);
 
 	// Activity event icons
 	function getActivityIcon(type: ActivityEvent['type']): string {
@@ -91,41 +58,6 @@
 		}
 	}
 
-	function formatAgent(agent: string): string {
-		const parts = agent.split('/');
-		return parts[parts.length - 1];
-	}
-
-	function formatDate(dateStr: string): string {
-		if (!dateStr) return 'Unknown';
-		const date = new Date(dateStr);
-		return date.toLocaleDateString('en-US', {
-			month: 'short',
-			day: 'numeric',
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
-	}
-
-	function formatRelativeTime(dateStr: string): string {
-		const date = new Date(dateStr);
-		const now = new Date();
-		const diffMs = now.getTime() - date.getTime();
-		const diffMins = Math.floor(diffMs / 60000);
-		const diffHours = Math.floor(diffMins / 60);
-		const diffDays = Math.floor(diffHours / 24);
-
-		if (diffMins < 1) return 'just now';
-		if (diffMins < 60) return `${diffMins}m ago`;
-		if (diffHours < 24) return `${diffHours}h ago`;
-		if (diffDays < 7) return `${diffDays}d ago`;
-		return formatDate(dateStr);
-	}
-
-	function getIssueStatusBg(status: IssueStatus): string {
-		return statusConfig[status].bgClass;
-	}
 </script>
 
 <svelte:head>
@@ -194,11 +126,11 @@
 							</div>
 							<div>
 								<dt class="text-muted-foreground">Created</dt>
-								<dd class="text-foreground mt-0.5">{formatDate(issue.created_at)}</dd>
+								<dd class="text-foreground mt-0.5">{formatDate(issue.created_at, true)}</dd>
 							</div>
 							<div>
 								<dt class="text-muted-foreground">Updated</dt>
-								<dd class="text-foreground mt-0.5">{formatDate(issue.updated_at)}</dd>
+								<dd class="text-foreground mt-0.5">{formatDate(issue.updated_at, true)}</dd>
 							</div>
 							{#if issue.assignee}
 								<div class="col-span-2">

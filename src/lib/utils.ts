@@ -13,3 +13,57 @@ import { twMerge } from 'tailwind-merge';
 export function cn(...inputs: ClassValue[]): string {
 	return twMerge(clsx(inputs));
 }
+
+// Re-export date utilities for convenient access
+export {
+	formatRelativeTime,
+	formatTimestamp,
+	formatDate,
+	formatTime,
+	formatFriendlyDate,
+	formatDuration,
+	isToday,
+	isPast
+} from './utils/date';
+
+// Re-export status utilities for convenient access
+export {
+	// Convoy status
+	type ConvoyStatus,
+	type ConvoyStatusConfig,
+	convoyStatusConfig,
+	getConvoyStatusConfig,
+	// Issue status
+	type IssueStatus,
+	type IssueStatusConfig,
+	issueStatusConfig,
+	getIssueStatusConfig,
+	getIssueStatusBg,
+	getIssueStatusColor,
+	getIssueStatusBgSimple,
+	// Escalation severity
+	type EscalationSeverity,
+	type EscalationSeverityConfig,
+	escalationSeverityConfig,
+	getEscalationSeverityConfig,
+	// Priority
+	type PriorityConfig,
+	priorityLabels,
+	getPriorityConfig,
+	// Worker/Agent formatting
+	formatWorkerName,
+	formatAgent
+} from './utils/status';
+
+// Re-export logger utilities for convenient access
+export {
+	createLogger,
+	configureLogger,
+	enableNamespaces,
+	disableNamespaces,
+	enableAllLogs,
+	disableAllLogs,
+	getEnabledNamespaces,
+	log,
+	type LogLevel
+} from './utils/logger';

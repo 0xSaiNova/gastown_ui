@@ -1,5 +1,11 @@
 <script lang="ts">
 	import { GridPattern, ProgressBar, StatusIndicator, EmptyState } from '$lib/components';
+	import {
+		formatDate,
+		convoyStatusConfig,
+		getIssueStatusColor,
+		type ConvoyStatus
+	} from '$lib/utils';
 	import type { Convoy } from './+page.server';
 	import { ChevronDown } from 'lucide-svelte';
 
@@ -15,57 +21,6 @@
 			expanded.add(id);
 		}
 		expanded = new Set(expanded);
-	}
-
-	// Map convoy status to visual properties
-	const statusConfig = {
-		active: {
-			color: 'success' as const,
-			indicatorStatus: 'running' as const,
-			label: 'Active',
-			borderClass: 'border-status-online/30'
-		},
-		stale: {
-			color: 'warning' as const,
-			indicatorStatus: 'idle' as const,
-			label: 'Stale',
-			borderClass: 'border-amber-500/30'
-		},
-		stuck: {
-			color: 'error' as const,
-			indicatorStatus: 'error' as const,
-			label: 'Stuck',
-			borderClass: 'border-status-offline/30'
-		},
-		complete: {
-			color: 'success' as const,
-			indicatorStatus: 'complete' as const,
-			label: 'Complete',
-			borderClass: 'border-status-online/30'
-		}
-	};
-
-	function formatDate(dateStr: string): string {
-		const date = new Date(dateStr);
-		return date.toLocaleDateString('en-US', {
-			month: 'short',
-			day: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
-	}
-
-	function getIssueStatusColor(status: string): string {
-		switch (status) {
-			case 'in_progress':
-				return 'text-status-online';
-			case 'closed':
-				return 'text-muted-foreground';
-			case 'blocked':
-				return 'text-status-offline';
-			default:
-				return 'text-status-idle';
-		}
 	}
 </script>
 
@@ -101,7 +56,7 @@
 			{:else}
 				<div class="space-y-4">
 					{#each data.convoys as convoy (convoy.id)}
-						{@const config = statusConfig[convoy.status]}
+						{@const config = convoyStatusConfig[convoy.status as ConvoyStatus]}
 						{@const isExpanded = expanded.has(convoy.id)}
 						<a
 							href="/convoys/{convoy.id}"
