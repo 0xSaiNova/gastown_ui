@@ -24,9 +24,34 @@
 			return;
 		}
 		isSubmitting = true;
-		// TODO: Call bd close or API to resolve escalation
-		// Resolution would include: id, selectedOption, resolutionNote
-		isSubmitting = false;
+
+		try {
+			const response = await fetch(`/api/gastown/escalations/${escalation.id}/resolve`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					selectedOption,
+					resolutionNote
+				})
+			});
+
+			const result = await response.json();
+
+			if (result.success) {
+				// Redirect back to escalations list
+				window.location.href = '/escalations';
+			} else {
+				console.error('Failed to resolve escalation:', result.error);
+				alert(`Failed to resolve escalation: ${result.error}`);
+			}
+		} catch (error) {
+			console.error('Failed to resolve escalation:', error);
+			alert('Failed to resolve escalation. Please try again.');
+		} finally {
+			isSubmitting = false;
+		}
 	}
 </script>
 
