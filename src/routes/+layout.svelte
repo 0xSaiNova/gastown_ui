@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import { SkipLink, Announcer, BottomNav, Sidebar, NavigationLoader, GlobalSearch, DegradedModeBanner } from '$lib/components';
+	import { SkipLink, Announcer, BottomNav, Sidebar, NavigationLoader, GlobalSearch, DegradedModeBanner, KnownBugDetector } from '$lib/components';
 	import { initializeKeyboardShortcuts, keyboardManager } from '$lib/utils/keyboard';
 	import { preloadRoute } from '$lib/preload';
 	import { page } from '$app/stores';
@@ -240,6 +240,9 @@
 
 <!-- Degraded mode banner -->
 <DegradedModeBanner />
+
+<!-- Known bug detector -->
+<KnownBugDetector closeable={true} autoDismiss={0} />
 
 <!-- Skip link for keyboard users -->
 <SkipLink href="main-content" />
