@@ -4,7 +4,21 @@
  * Global test setup for @testing-library/svelte and jest-dom matchers.
  */
 import '@testing-library/jest-dom/vitest';
-import { vi } from 'vitest';
+import { vi, beforeAll, afterEach, afterAll } from 'vitest';
+import { setupMockServer, resetMockServer, teardownMockServer } from './mocks/server';
+
+// Setup MSW server for API mocking
+beforeAll(() => {
+	setupMockServer();
+});
+
+afterEach(() => {
+	resetMockServer();
+});
+
+afterAll(() => {
+	teardownMockServer();
+});
 
 // Mock $app/environment
 vi.mock('$app/environment', () => ({
